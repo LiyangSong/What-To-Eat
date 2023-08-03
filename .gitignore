@@ -1,0 +1,18 @@
+# IntelliJ
+.idea/
+out/
+.idea_modules/
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+
+# Windows
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride

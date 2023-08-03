@@ -4,36 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c159982-ccdc-4d1e-a2bf-39a0fc398adf" name="Changes" comment="initial framework for both back and front end">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/src/main/java/net/summer23project/wtebackend/WteBackendApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-backend/src/test/java/net/summer23project/wtebackend/WteBackendApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/.eslintrc.cjs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/public/vite.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/src/App.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/src/App.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/src/assets/react.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/src/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/src/main.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wte-frontend/vite.config.js" afterDir="false" />
-    </list>
+    <list default="true" id="9c159982-ccdc-4d1e-a2bf-39a0fc398adf" name="Changes" comment="initial framework for both back and front end" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -180,8 +151,16 @@
       <workItem from="1691100305582" duration="661000" />
       <workItem from="1691100977628" duration="87000" />
       <workItem from="1691101127198" duration="616000" />
-      <workItem from="1691102291537" duration="1609000" />
+      <workItem from="1691102291537" duration="1833000" />
     </task>
+    <task id="LOCAL-00001" summary="initial framework for both back and front end">
+      <created>1691103925542</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1691103925543</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
