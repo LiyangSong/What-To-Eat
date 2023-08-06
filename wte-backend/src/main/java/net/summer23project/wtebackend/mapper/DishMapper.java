@@ -8,7 +8,7 @@ public class DishMapper {
         return new DishDto(
                 dish.getId(),
                 dish.getName(),
-                dish.getIngredients()
+                dish.getDishIngredients()
         );
     }
 
@@ -16,7 +16,7 @@ public class DishMapper {
         return new Dish(
                 dishDto.getId(),
                 dishDto.getName(),
-                dishDto.getIngredients()
+                dishDto.getDishIngredients()
         );
     }
 }

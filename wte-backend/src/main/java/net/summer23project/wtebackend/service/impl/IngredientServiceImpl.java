@@ -1,4 +1,6 @@
 package net.summer23project.wtebackend.service.impl;
 
-public class IngredientServiceImpl {
+import net.summer23project.wtebackend.service.IngredientService;
+
+public class IngredientServiceImpl implements IngredientService {
 }

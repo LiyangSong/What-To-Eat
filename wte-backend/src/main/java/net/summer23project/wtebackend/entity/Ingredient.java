@@ -28,15 +28,9 @@ public class Ingredient {
     @Column(name = "ingredient_unit")
     private UnitType unit;
 
-    // many-to-many relationship between ingredients and nutrients
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "Ingredient_Nutrient_Content",
-        joinColumns = @JoinColumn(name="ingredient_id"),
-        inverseJoinColumns = @JoinColumn(name="nutrient_id"))
-    private Set<Nutrient> nutrients = new HashSet<>();
+    @OneToMany(mappedBy = "ingredient")
+    private Set<DishIngredient> dishIngredients = new HashSet<>();
 
-    // many-to-many relationship between dishes and ingredients
-    @ManyToMany(mappedBy = "ingredients")
-    private Set<Dish> dishes = new HashSet<>();
-
+    @OneToMany(mappedBy = "ingredient")
+    private Set<IngredientNutrient> ingredientNutrients = new HashSet<>();
 }

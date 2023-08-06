@@ -28,7 +28,6 @@ public class Nutrient {
     @Column(name = "nutrient_unit")
     private UnitType unit;
 
-    // many-to-many relationship between ingredients and nutrients
-    @ManyToMany(mappedBy = "nutrients")
-    private Set<Ingredient> ingredients = new HashSet<>();
+    @OneToMany(mappedBy = "nutrient")
+    private Set<IngredientNutrient> ingredientNutrients = new HashSet<>();
 }

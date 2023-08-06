@@ -1,4 +1,6 @@
 package net.summer23project.wtebackend.service.impl;
 
-public class DishServiceImpl {
+import net.summer23project.wtebackend.service.DishService;
+
+public class DishServiceImpl implements DishService {
 }

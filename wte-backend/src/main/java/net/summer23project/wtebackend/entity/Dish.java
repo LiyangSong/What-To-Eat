@@ -24,10 +24,6 @@ public class Dish {
     @Column(name = "dish_name")
     private String name;
 
-    //many-to-many relationship between dishes and ingredients
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "Dish_Ingredient_Inventory",
-            joinColumns = @JoinColumn(name="dish_id"),
-            inverseJoinColumns = @JoinColumn(name="ingredient_id"))
-    private Set<Ingredient> ingredients = new HashSet<>();
+    @OneToMany(mappedBy = "dish")
+    private Set<DishIngredient> dishIngredients = new HashSet<>();
 }

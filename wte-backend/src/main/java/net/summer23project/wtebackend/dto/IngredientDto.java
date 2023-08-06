@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.summer23project.wtebackend.entity.Dish;
-import net.summer23project.wtebackend.entity.Nutrient;
+import net.summer23project.wtebackend.entity.DishIngredient;
+import net.summer23project.wtebackend.entity.IngredientNutrient;
 import net.summer23project.wtebackend.enums.UnitType;
 
 import java.util.Set;
@@ -18,6 +18,6 @@ public class IngredientDto {
     private Long id;
     private String name;
     private UnitType unit;
-    private Set<Nutrient> nutrients;
-    private Set<Dish> dishes;
+    private Set<DishIngredient> dishIngredients;
+    private Set<IngredientNutrient> ingredientNutrients;
 }

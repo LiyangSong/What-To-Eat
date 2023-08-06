@@ -1,4 +1,6 @@
 package net.summer23project.wtebackend.service.impl;
 
-public class NutrientServiceImpl {
+import net.summer23project.wtebackend.service.NutrientService;
+
+public class NutrientServiceImpl implements NutrientService {
 }

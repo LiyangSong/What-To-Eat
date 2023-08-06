@@ -9,8 +9,8 @@ public class IngredientMapper {
                 ingredient.getId(),
                 ingredient.getName(),
                 ingredient.getUnit(),
-                ingredient.getNutrients(),
-                ingredient.getDishes()
+                ingredient.getDishIngredients(),
+                ingredient.getIngredientNutrients()
         );
     }
 
@@ -19,8 +19,8 @@ public class IngredientMapper {
                 ingredientDto.getId(),
                 ingredientDto.getName(),
                 ingredientDto.getUnit(),
-                ingredientDto.getNutrients(),
-                ingredientDto.getDishes()
+                ingredientDto.getDishIngredients(),
+                ingredientDto.getIngredientNutrients()
         );
     }
 }

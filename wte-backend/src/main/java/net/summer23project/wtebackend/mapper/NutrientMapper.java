@@ -9,7 +9,7 @@ public class NutrientMapper {
                 nutrient.getId(),
                 nutrient.getName(),
                 nutrient.getUnit(),
-                nutrient.getIngredients()
+                nutrient.getIngredientNutrients()
         );
     }
 
@@ -18,7 +18,7 @@ public class NutrientMapper {
                 nutrientDto.getId(),
                 nutrientDto.getName(),
                 nutrientDto.getUnit(),
-                nutrientDto.getIngredients()
+                nutrientDto.getIngredientNutrients()
         );
     }
 
