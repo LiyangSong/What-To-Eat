@@ -8,6 +8,7 @@ public class NutrientMapper {
         return new NutrientDto(
                 nutrient.getId(),
                 nutrient.getName(),
+                nutrient.getUnit(),
                 nutrient.getIngredients()
         );
     }
@@ -16,6 +17,7 @@ public class NutrientMapper {
         return new Nutrient(
                 nutrientDto.getId(),
                 nutrientDto.getName(),
+                nutrientDto.getUnit(),
                 nutrientDto.getIngredients()
         );
     }

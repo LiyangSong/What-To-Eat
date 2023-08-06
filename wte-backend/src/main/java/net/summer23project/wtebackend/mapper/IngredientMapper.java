@@ -8,6 +8,7 @@ public class IngredientMapper {
         return new IngredientDto(
                 ingredient.getId(),
                 ingredient.getName(),
+                ingredient.getUnit(),
                 ingredient.getNutrients(),
                 ingredient.getDishes()
         );
@@ -17,6 +18,7 @@ public class IngredientMapper {
         return new Ingredient(
                 ingredientDto.getId(),
                 ingredientDto.getName(),
+                ingredientDto.getUnit(),
                 ingredientDto.getNutrients(),
                 ingredientDto.getDishes()
         );

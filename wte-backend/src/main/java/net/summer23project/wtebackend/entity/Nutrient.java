@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.summer23project.wtebackend.enums.UnitType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,9 @@ public class Nutrient {
 
     @Column(name = "nutrient_name")
     private String name;
+
+    @Column(name = "nutrient_unit")
+    private UnitType unit;
 
     // many-to-many relationship between ingredients and nutrients
     @ManyToMany(mappedBy = "nutrients")
