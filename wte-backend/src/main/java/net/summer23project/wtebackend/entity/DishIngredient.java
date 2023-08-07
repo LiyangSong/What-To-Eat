@@ -18,14 +18,14 @@ public class DishIngredient {
     @Column(name = "dish_ingredient_id")
     private Long id;
 
-    @Column(name = "ingredient_number")
+    @Column(name = "ingredient_number", nullable = false)
     private int ingredientNumber;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "dish_id")
     private Dish dish;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 }

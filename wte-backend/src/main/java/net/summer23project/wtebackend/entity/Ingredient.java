@@ -22,10 +22,10 @@ public class Ingredient {
     @Column(name = "ingredient_id")
     private Long id;
 
-    @Column(name = "ingredient_name")
+    @Column(name = "ingredient_name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "ingredient_unit")
+    @Column(name = "ingredient_unit", nullable = false)
     private UnitType unit;
 
     @OneToMany(mappedBy = "ingredient")

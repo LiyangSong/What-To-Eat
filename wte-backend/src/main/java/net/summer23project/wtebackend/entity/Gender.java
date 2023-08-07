@@ -21,7 +21,7 @@ public class Gender {
     @Column(name = "gender_id")
     private Long id;
 
-    @Column(name = "gender_name")
+    @Column(name = "gender_name", nullable = false, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "gender")

@@ -21,7 +21,7 @@ public class Dish {
     @Column(name = "dish_id")
     private Long id;
 
-    @Column(name = "dish_name")
+    @Column(name = "dish_name", nullable = false, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "dish")

@@ -22,10 +22,10 @@ public class Nutrient {
     @Column(name = "nutrient_id")
     private Long id;
 
-    @Column(name = "nutrient_name")
+    @Column(name = "nutrient_name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "nutrient_unit")
+    @Column(name = "nutrient_unit", nullable = false)
     private UnitType unit;
 
     @OneToMany(mappedBy = "nutrient")
