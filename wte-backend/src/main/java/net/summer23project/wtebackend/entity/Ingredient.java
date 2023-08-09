@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.summer23project.wtebackend.enums.UnitType;
 
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Liyang
+ */
 @Entity
 @Table(name = "Ingredients")
 @Getter
@@ -25,8 +27,9 @@ public class Ingredient {
     @Column(name = "ingredient_name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "ingredient_unit", nullable = false)
-    private UnitType unit;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
 
     @OneToMany(mappedBy = "ingredient")
     private Set<DishIngredient> dishIngredients = new HashSet<>();
