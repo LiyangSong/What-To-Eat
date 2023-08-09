@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.summer23project.wtebackend.entity.DishIngredient;
 
+import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Liyang
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,5 +18,5 @@ import java.util.Set;
 public class DishDto {
     private Long id;
     private String name;
-    private Set<DishIngredient> dishIngredients;
+    private Set<Long> dishIngredientIds = new HashSet<>();
 }

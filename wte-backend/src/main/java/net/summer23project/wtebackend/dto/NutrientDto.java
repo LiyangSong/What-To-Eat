@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.summer23project.wtebackend.entity.IngredientNutrient;
-import net.summer23project.wtebackend.enums.UnitType;
 
+import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Liyang
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,6 +18,6 @@ import java.util.Set;
 public class NutrientDto {
     private Long id;
     private String name;
-    private UnitType unit;
-    private Set<IngredientNutrient> ingredientNutrients;
+    private Long unitId;
+    private Set<Long> ingredientNutrientIds = new HashSet<>();
 }
