@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author Liyang
+ */
 @Entity
 @Table(name = "Ingredient_Nutrient_Content")
 @Getter

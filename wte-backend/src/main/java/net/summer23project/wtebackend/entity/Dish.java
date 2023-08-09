@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Liyang
+ */
 @Entity
 @Table(name = "Dishes")
 @Getter
