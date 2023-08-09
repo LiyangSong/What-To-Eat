@@ -30,7 +30,9 @@ public class AppConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/api/users/register").permitAll());
+                        authorize.anyRequest().permitAll()); // temporarily permit all requests during develop
+                //.authorizeHttpRequests((authorize) ->
+                //        authorize.requestMatchers("/api/users/register").permitAll());
 
         return http.build();
     }
