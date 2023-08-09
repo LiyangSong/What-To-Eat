@@ -13,20 +13,23 @@ import java.util.Set;
  * @author Liyang
  */
 @Entity
-@Table(name = "Roles")
+@Table(name = "Units")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class Unit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
+    @Column(name = "unit_id")
     private Long id;
 
-    @Column(name = "role_name", nullable = false, unique = true)
+    @Column(name = "unit_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "unit")
+    private Set<Ingredient> ingredients = new HashSet<>();
+
+    @OneToMany(mappedBy = "unit")
+    private Set<Nutrient> nutrients = new HashSet<>();
 }

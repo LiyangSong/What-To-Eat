@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.summer23project.wtebackend.entity.User;
 
+import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Liyang
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,5 +18,5 @@ import java.util.Set;
 public class RoleDto {
     private Long id;
     private String name;
-    private Set<User> users;
+    private Set<Long> userIds = new HashSet<>();
 }
