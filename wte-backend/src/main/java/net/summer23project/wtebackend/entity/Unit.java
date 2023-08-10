@@ -13,24 +13,23 @@ import java.util.Set;
  * @author Liyang
  */
 @Entity
-@Table(name = "Nutrients")
+@Table(name = "Units")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Nutrient {
+public class Unit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nutrient_id")
+    @Column(name = "unit_id")
     private Long id;
 
-    @Column(name = "nutrient_name", nullable = false, unique = true)
+    @Column(name = "unit_name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    @OneToMany(mappedBy = "unit")
+    private Set<Ingredient> ingredients = new HashSet<>();
 
-    @OneToMany(mappedBy = "nutrient")
-    private Set<IngredientNutrient> ingredientNutrients = new HashSet<>();
+    @OneToMany(mappedBy = "unit")
+    private Set<Nutrient> nutrients = new HashSet<>();
 }

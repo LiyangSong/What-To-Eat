@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author Liyang
+ */
 @Entity
 @Table(name = "Ingredient_Nutrient_Content")
 @Getter
@@ -18,14 +21,14 @@ public class IngredientNutrient {
     @Column(name = "ingredient_nutrient_id")
     private Long id;
 
-    @Column(name = "nutrient_number")
+    @Column(name = "nutrient_number", nullable = false)
     private int nutrientNumber;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "nutrient_id")
     private Nutrient nutrient;
 }

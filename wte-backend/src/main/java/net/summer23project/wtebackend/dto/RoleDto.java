@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Liyang
  */
@@ -12,9 +15,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientNutrientDto {
+public class RoleDto {
     private Long id;
-    private int nutrientNumber;
-    private Long ingredientId;
-    private Long nutrientId;
+    private String name;
+    private Set<Long> userIds = new HashSet<>();
 }
