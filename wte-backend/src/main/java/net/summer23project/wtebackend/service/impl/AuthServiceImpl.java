@@ -1,6 +1,7 @@
 package net.summer23project.wtebackend.service.impl;
 
 import lombok.AllArgsConstructor;
+import net.summer23project.wtebackend.dto.LoginDto;
 import net.summer23project.wtebackend.dto.RegisterDto;
 import net.summer23project.wtebackend.entity.Role;
 import net.summer23project.wtebackend.entity.User;
@@ -11,6 +12,10 @@ import net.summer23project.wtebackend.repository.UserRepository;
 import net.summer23project.wtebackend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +36,8 @@ public class AuthServiceImpl implements AuthService {
     private GenderRepository genderRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Override
     public String register(RegisterDto registerDto) {
@@ -59,5 +66,17 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return "User " + user.getName() + " Registered Successfully!";
+    }
+
+    @Override
+    public String login(LoginDto loginDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getNameOrEmail(),
+                loginDto.getPassword()
+        ));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "User " + loginDto.getNameOrEmail() + " logged in successfully!";
     }
 }
