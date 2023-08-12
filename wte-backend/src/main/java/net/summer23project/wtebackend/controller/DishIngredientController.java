@@ -10,6 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/dishIngredients")
 @CrossOrigin("*")
 @AllArgsConstructor
-@NoArgsConstructor
 public class DishIngredientController {
 }

@@ -14,6 +14,5 @@ import java.util.List;
 @RequestMapping("/api/nutrients")
 @CrossOrigin("*")
 @AllArgsConstructor
-@NoArgsConstructor
 public class NutrientController {
 }

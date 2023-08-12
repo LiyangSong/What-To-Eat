@@ -10,6 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/ingredientNutrients")
 @CrossOrigin("*")
 @AllArgsConstructor
-@NoArgsConstructor
 public class IngredientNutrientController {
 }
