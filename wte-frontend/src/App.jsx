@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HeaderComponent from "./components/HeaderComponent.jsx";
+import FooterComponent from "./components/FooterComponent.jsx";
+import WelcomeComponent from "./components/WelcomeComponent.jsx";
+import LoginComponent from "./components/LoginComponent.jsx";
+import RegisterComponent from "./components/RegisterComponent.jsx";
+import DishesComponent from "./components/DishesComponent.jsx";
+import IngredientsComponent from "./components/IngredientsComponent.jsx";
+import DishPlanComponent from "./components/DishPlanComponent.jsx";
+import AdminComponent from "./components/AdminComponent.jsx";
+import PageNotFoundComponent from "./components/PageNotFoundComponent.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <BrowserRouter>
+            <HeaderComponent />
+            <Routes>
+                {/* Public Routes */}
+                <Route path = "/" element = {<WelcomeComponent />} />
+                <Route path = "/login" element = {<LoginComponent />} />
+                <Route path = "/register" element = {<RegisterComponent />} />
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+                {/* Authenticated User Routes */}
+                <Route path = "/dishes" element = {<DishesComponent />} />
+                <Route path = "/Ingredients" element = {<IngredientsComponent />} />
+                <Route path = "/dish-plan" element = {<DishPlanComponent />} />
+
+                {/* Admin Routes */}
+                <Route path = "/admin" element = {<AdminComponent />} />
+
+                {/* 404 Page */}
+                <Route component={<PageNotFoundComponent />} />
+            </Routes>
+            <FooterComponent />
+        </BrowserRouter>
+    )
 }
 
-export default App
+export default App;

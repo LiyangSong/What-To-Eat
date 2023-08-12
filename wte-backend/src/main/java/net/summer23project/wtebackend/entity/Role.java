@@ -1,5 +1,6 @@
-package net.summer23project.wtebackend.dto;
+package net.summer23project.wtebackend.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +12,18 @@ import java.util.Set;
 /**
  * @author Liyang
  */
+@Entity
+@Table(name = "Roles")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientDto {
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
     private Long id;
+
+    @Column(name = "role_name", nullable = false, unique = true)
     private String name;
-    private Long unitId;
-    private Set<Long> dishIngredientIds = new HashSet<>();
-    private Set<Long> ingredientNutrientIds = new HashSet<>();
 }

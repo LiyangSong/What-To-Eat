@@ -12,9 +12,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientNutrientDto {
+public class UserDto {
     private Long id;
-    private int nutrientNumber;
-    private Long ingredientId;
-    private Long nutrientId;
+    private String name;
+    private String email;
+    private Integer age;
+    private Long genderId;
+    private Long roleId;
 }

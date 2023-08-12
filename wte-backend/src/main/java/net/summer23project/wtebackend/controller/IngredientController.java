@@ -3,11 +3,14 @@ package net.summer23project.wtebackend.controller;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.summer23project.wtebackend.dto.IngredientDto;
-import net.summer23project.wtebackend.mapper.IngredientMapper;
 import net.summer23project.wtebackend.service.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api/ingredients")

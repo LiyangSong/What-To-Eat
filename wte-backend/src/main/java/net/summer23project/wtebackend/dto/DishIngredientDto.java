@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.summer23project.wtebackend.entity.Dish;
-import net.summer23project.wtebackend.entity.Ingredient;
 
+/**
+ * @author Liyang
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,6 +15,6 @@ import net.summer23project.wtebackend.entity.Ingredient;
 public class DishIngredientDto {
     private Long id;
     private int ingredientNumber;
-    private Dish dish;
-    private Ingredient ingredient;
+    private Long dishId;
+    private Long ingredientId;
 }

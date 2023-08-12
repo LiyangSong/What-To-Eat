@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Liyang
+ */
 @Entity
 @Table(name = "Dishes")
 @Getter
@@ -21,7 +24,7 @@ public class Dish {
     @Column(name = "dish_id")
     private Long id;
 
-    @Column(name = "dish_name")
+    @Column(name = "dish_name", nullable = false, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "dish")
