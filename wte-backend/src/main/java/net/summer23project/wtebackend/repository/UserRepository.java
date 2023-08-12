@@ -4,13 +4,16 @@ import net.summer23project.wtebackend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 /**
  * @author Liyang
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findUserById(Long id);
-    User findUserByName(String name);
-    User findUserByEmail(String email);
+    Optional<User> findByName(String name);
+    Boolean existsByName(String name);
+    Optional<User> findByNameOrEmail(String name, String Email);
+    Boolean existsByEmail(String email);
 }
