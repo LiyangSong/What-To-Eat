@@ -1,7 +1,6 @@
 package net.summer23project.wtebackend.config;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.repository.UserRepository;
 import net.summer23project.wtebackend.security.JwtAuthenticationEntryPoint;
 import net.summer23project.wtebackend.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +10,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
