@@ -9,8 +9,8 @@ import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.repository.GenderRepository;
 import net.summer23project.wtebackend.repository.RoleRepository;
 import net.summer23project.wtebackend.repository.UserRepository;
+import net.summer23project.wtebackend.security.JwtTokenProvider;
 import net.summer23project.wtebackend.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,18 +29,15 @@ import java.util.Set;
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
     private RoleRepository roleRepository;
-    @Autowired
     private GenderRepository genderRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private AuthenticationManager authenticationManager;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public String register(RegisterDto registerDto) {
         if(userRepository.existsByName(registerDto.getName())) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "User name already exists!");
@@ -77,6 +75,9 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "User " + loginDto.getNameOrEmail() + " logged in successfully!";
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        //return "User " + loginDto.getNameOrEmail() + " logged in successfully!";
+        return token;
     }
 }

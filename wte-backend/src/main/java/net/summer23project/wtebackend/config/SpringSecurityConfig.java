@@ -2,7 +2,8 @@ package net.summer23project.wtebackend.config;
 
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.summer23project.wtebackend.security.JwtAuthenticationEntryPoint;
+import net.summer23project.wtebackend.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author Liyang
@@ -22,10 +24,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SpringSecurityConfig {
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private UserRepository userRepository;
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private JwtAuthenticationFilter authenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -42,9 +42,14 @@ public class SpringSecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/api/auth/**").permitAll();
+                    authorize.requestMatchers("/api/**").permitAll(); // temp permit all request
                     authorize.anyRequest().authenticated();
 
                 }).httpBasic(Customizer.withDefaults());
+
+        http.exceptionHandling((exception) ->
+                exception.authenticationEntryPoint(authenticationEntryPoint));
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

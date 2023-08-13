@@ -1,10 +1,10 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
+import net.summer23project.wtebackend.dto.JwtAuthResponseDto;
 import net.summer23project.wtebackend.dto.LoginDto;
 import net.summer23project.wtebackend.dto.RegisterDto;
 import net.summer23project.wtebackend.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class AuthController {
-    @Autowired
     private AuthService authService;
 
     @PostMapping("/register")
@@ -27,9 +26,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
-        String response = authService.login(loginDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<JwtAuthResponseDto> login(@RequestBody LoginDto loginDto){
+        String token = authService.login(loginDto);
+
+        JwtAuthResponseDto jwtAuthResponseDto = new JwtAuthResponseDto();
+        jwtAuthResponseDto.setAccessToken(token);
+
+        return new ResponseEntity<>(jwtAuthResponseDto, HttpStatus.OK);
     }
 
 }
