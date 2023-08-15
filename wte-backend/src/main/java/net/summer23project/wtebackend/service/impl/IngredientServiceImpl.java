@@ -3,10 +3,14 @@ package net.summer23project.wtebackend.service.impl;
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.IngredientDto;
 import net.summer23project.wtebackend.entity.Ingredient;
-import net.summer23project.wtebackend.mapper.IngredientMapper;
+import net.summer23project.wtebackend.entity.Unit;
+import net.summer23project.wtebackend.exception.ResourceNotFoundException;
 import net.summer23project.wtebackend.repository.IngredientRepository;
+import net.summer23project.wtebackend.repository.UnitRepository;
 import net.summer23project.wtebackend.service.IngredientService;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
+
 
 import java.util.List;
 
@@ -16,11 +20,20 @@ public class IngredientServiceImpl implements IngredientService {
 
     private IngredientRepository ingredientRepository;
 
+    private ModelMapper modelMapper;
+
+    private UnitRepository unitRepository;
+
+    //test url: Post 127.0.0.1:8080/api/ingredients
     @Override
     public IngredientDto createIngredient(IngredientDto ingredientDto) {
-        Ingredient ingredient= IngredientMapper.mapToIngredient(ingredientDto);
-        Ingredient savedIngredient=ingredientRepository.save(ingredient);
-        return IngredientMapper.mapToIngredientDto(savedIngredient);
+        Ingredient ingredient = modelMapper.map(ingredientDto, Ingredient.class);
+        Unit unitEntity = unitRepository.findById(ingredientDto.getUnitId())
+                .orElseThrow(() -> new ResourceNotFoundException("Unit not found with ID " + ingredientDto.getUnitId()));
+        ingredient.setUnit(unitEntity);
+        Ingredient savedIngredient = ingredientRepository.save(ingredient);
+        IngredientDto savedIngredientDto = modelMapper.map(savedIngredient, IngredientDto.class);
+        return savedIngredientDto;
     }
 
     @Override
