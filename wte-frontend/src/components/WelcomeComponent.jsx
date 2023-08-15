@@ -1,6 +1,10 @@
 function WelcomeComponent(){
     return (
-        <h1>Welcome!</h1>
+        <div>
+            <button>Login</button>
+            <button>Register</button>
+        </div>
+
     );
 }
 
