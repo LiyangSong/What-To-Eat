@@ -5,7 +5,7 @@ import net.summer23project.wtebackend.dto.IngredientDto;
 import java.util.List;
 
 public interface IngredientService {
-    IngredientDto createIngredient(IngredientDto ingredientDto);
+    IngredientDto createIngredient(IngredientDto ingredientDto, String userName);
     IngredientDto getIngredientById(Long ingredientId);
     List<IngredientDto> getAllIngredients();
     IngredientDto updateIngredient(Long ingredientId, IngredientDto updatedIngredient);
