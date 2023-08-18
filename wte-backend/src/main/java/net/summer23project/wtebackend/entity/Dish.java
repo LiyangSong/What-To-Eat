@@ -28,5 +28,5 @@ public class Dish {
     private String name;
 
     @OneToMany(mappedBy = "dish")
-    private Set<DishIngredient> dishIngredients = new HashSet<>();
+    private Set<DishIngredientAmount> dishIngredientAmounts = new HashSet<>();
 }
