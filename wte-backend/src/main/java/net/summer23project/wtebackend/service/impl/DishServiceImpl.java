@@ -39,6 +39,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional(rollbackFor = ApiException.class)
     public DishDto getDishByName(String dishName) {
         return null;
     }

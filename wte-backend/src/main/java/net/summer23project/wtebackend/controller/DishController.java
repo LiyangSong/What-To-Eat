@@ -53,24 +53,28 @@ public class DishController {
     }
 
     @GetMapping("{id}")
+    @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<DishDto> getDishById(@PathVariable("id") Long dishId){
         DishDto dishDto=dishService.getDishById(dishId);
         return ResponseEntity.ok(dishDto);
     }
 
     @GetMapping
+    @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<List<DishDto>> getAllDish(@AuthenticationPrincipal UserDetails userDetails){
         List<DishDto> dishes=dishService.getAllDishes(userDetails.getUsername());
         return ResponseEntity.ok(dishes);
     }
 
     @PutMapping("{id}")
+    @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<DishDto> updateDish(@PathVariable("id") Long dishId,@RequestBody DishDto updatedishDto){
         DishDto dishDto=dishService.updateDish(dishId,updatedishDto);
         return ResponseEntity.ok(dishDto);
     }
 
     @DeleteMapping("{id}")
+    @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<String> deleteDish(@PathVariable("id") Long dishId,@AuthenticationPrincipal UserDetails userDetails){
         dishService.deleteDish(dishId, userDetails.getUsername());
         return ResponseEntity.ok("Dish deleted successfully!");

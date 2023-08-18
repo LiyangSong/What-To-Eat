@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = ApiException.class)
     public String register(RegisterDto registerDto) {
         if(userRepository.existsByName(registerDto.getName())) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "User name already exists!");
