@@ -32,8 +32,12 @@ public class Ingredient {
     private Unit unit;
 
     @OneToMany(mappedBy = "ingredient")
-    private Set<DishIngredient> dishIngredients = new HashSet<>();
+    private Set<DishIngredientAmount> dishIngredientAmounts = new HashSet<>();
 
     @OneToMany(mappedBy = "ingredient")
-    private Set<IngredientNutrient> ingredientNutrients = new HashSet<>();
+    private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
+
+    @OneToMany(mappedBy = "ingredient")
+    private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();
+
 }

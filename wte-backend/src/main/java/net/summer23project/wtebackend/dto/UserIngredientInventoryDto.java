@@ -12,7 +12,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtAuthResponseDto {
-    private String accessToken;
-    private String tokenType = "Bearer";
+public class UserIngredientInventoryDto {
+    private Long userId;
+    private Long ingredientId;
+    private int userIngredientInventory;
 }

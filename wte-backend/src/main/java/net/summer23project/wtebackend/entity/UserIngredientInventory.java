@@ -10,25 +10,25 @@ import lombok.Setter;
  * @author Liyang
  */
 @Entity
-@Table(name = "Ingredient_Nutrient_Content")
+@Table(name = "User_Ingredient_Inventories")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientNutrient {
+public class UserIngredientInventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ingredient_nutrient_id")
+    @Column(name = "user_ingredient_inventory_id")
     private Long id;
 
-    @Column(name = "nutrient_number", nullable = false)
-    private int nutrientNumber;
+    @Column(name = "ingredient_amount", nullable = false)
+    private int ingredientAmount;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
-    @JoinColumn(name = "nutrient_id")
-    private Nutrient nutrient;
 }

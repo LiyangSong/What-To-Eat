@@ -12,9 +12,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishIngredientDto {
-    private Long id;
-    private int ingredientNumber;
+public class DishIngredientAmountDto {
     private Long dishId;
     private Long ingredientId;
+    private int ingredientAmount;
 }

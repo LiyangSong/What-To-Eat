@@ -6,31 +6,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author Liyang
  */
 @Entity
-@Table(name = "Nutrients")
+@Table(name = "Dish_Ingredient_Amounts")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Nutrient {
+public class DishIngredientAmount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nutrient_id")
+    @Column(name = "dish_ingredient_amount_id")
     private Long id;
 
-    @Column(name = "nutrient_name", nullable = false, unique = true)
-    private String name;
+    @Column(name = "ingredient_amount", nullable = false)
+    private int ingredientAmount;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
 
-    @OneToMany(mappedBy = "nutrient")
-    private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @JoinColumn(name = "ingredient_id")
+    private Ingredient ingredient;
 }

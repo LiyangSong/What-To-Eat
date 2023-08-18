@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author Liyang
  */
@@ -18,5 +15,4 @@ import java.util.Set;
 public class DishDto {
     private Long id;
     private String name;
-    private Set<Long> dishIngredientIds = new HashSet<>();
 }
