@@ -32,5 +32,5 @@ public class Nutrient {
     private Unit unit;
 
     @OneToMany(mappedBy = "nutrient")
-    private Set<IngredientNutrient> ingredientNutrients = new HashSet<>();
+    private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
 }

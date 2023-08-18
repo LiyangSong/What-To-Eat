@@ -10,19 +10,19 @@ import lombok.Setter;
  * @author Liyang
  */
 @Entity
-@Table(name = "Ingredient_Nutrient_Content")
+@Table(name = "Ingredient_Nutrient_Amounts")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientNutrient {
+public class IngredientNutrientAmount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ingredient_nutrient_id")
+    @Column(name = "ingredient_nutrient_amount_id")
     private Long id;
 
-    @Column(name = "nutrient_number", nullable = false)
-    private int nutrientNumber;
+    @Column(name = "nutrient_amount", nullable = false)
+    private int nutrientAmount;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
     @JoinColumn(name = "ingredient_id")
