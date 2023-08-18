@@ -53,4 +53,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "dish_id", referencedColumnName = "dish_id")
     )
     private Set<Dish> dishes = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();
 }
