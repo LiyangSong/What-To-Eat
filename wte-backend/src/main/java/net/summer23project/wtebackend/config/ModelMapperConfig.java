@@ -1,7 +1,6 @@
 package net.summer23project.wtebackend.config;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishDto;
 import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
 import net.summer23project.wtebackend.dto.IngredientDto;
 import net.summer23project.wtebackend.entity.Dish;
@@ -19,9 +18,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Liyang
