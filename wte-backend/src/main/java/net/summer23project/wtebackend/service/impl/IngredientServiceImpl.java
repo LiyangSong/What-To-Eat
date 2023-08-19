@@ -24,7 +24,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public IngredientDto createIngredient(IngredientDto ingredientDto, String userName) {
+    public IngredientDto createIngredient(IngredientDto ingredientDto) {
         Ingredient ingredient = modelMapper.map(ingredientDto, Ingredient.class);
         Ingredient savedIngredient = ingredientRepository.save(ingredient);
         return modelMapper.map(savedIngredient, IngredientDto.class);
