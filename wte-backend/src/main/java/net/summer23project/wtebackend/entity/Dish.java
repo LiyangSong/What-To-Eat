@@ -29,4 +29,7 @@ public class Dish {
 
     @OneToMany(mappedBy = "dish")
     private Set<DishIngredientAmount> dishIngredientAmounts = new HashSet<>();
+
+    @ManyToMany(mappedBy = "dishes")
+    private Set<User> users = new HashSet<>();
 }

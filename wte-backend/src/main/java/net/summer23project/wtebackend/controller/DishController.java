@@ -3,11 +3,14 @@ package net.summer23project.wtebackend.controller;
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.DishDto;
 import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.entity.Dish;
+import net.summer23project.wtebackend.entity.User;
 import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.mapper.DishRequestMapper;
 import net.summer23project.wtebackend.service.DishIngredientAmountService;
 import net.summer23project.wtebackend.service.DishService;
 import net.summer23project.wtebackend.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Yue, Liyang
@@ -31,8 +36,10 @@ public class DishController {
     private DishIngredientAmountService dishIngredientAmountService;
     private DishRequestMapper dishRequestMapper;
 
-    // http://localhost:8080/api/dishes/create
-    @PostMapping("/create")
+    private ModelMapper modelMapper;
+
+    // Post http://localhost:8080/api/dishes
+    @PostMapping
     @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<DishDto> createDish(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -52,22 +59,39 @@ public class DishController {
         return new ResponseEntity<>(savedDishDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<DishDto> getDishById(@PathVariable("id") Long dishId){
-        DishDto dishDto=dishService.getDishById(dishId);
-        return ResponseEntity.ok(dishDto);
+    // Get http://localhost:8080/api/dishes/{name}
+    @GetMapping("{name}")
+    public ResponseEntity<DishDto> getDishByName(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("name") String dishName){
+        try {
+            String username = userDetails.getUsername();
+            DishDto dishDto = dishService.getDishByName(dishName, username);
+            return new ResponseEntity<>(dishDto, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(null, e.getStatus());
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     @GetMapping
-    public ResponseEntity<List<DishDto>> getAllDish(@AuthenticationPrincipal UserDetails userDetails){
-        List<DishDto> dishes=dishService.getAllDishes(userDetails.getUsername());
-        return ResponseEntity.ok(dishes);
+    public ResponseEntity<List<DishDto>> getAllDishes(@AuthenticationPrincipal UserDetails userDetails){
+        try {
+            List<DishDto> userDishes = dishService.getAllDishes(userDetails.getUsername());
+            return new ResponseEntity<>(userDishes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<DishDto> updateDish(@PathVariable("id") Long dishId,@RequestBody DishDto updatedishDto){
-        DishDto dishDto=dishService.updateDish(dishId,updatedishDto);
-        return ResponseEntity.ok(dishDto);
+    @PutMapping("{name}")
+    public ResponseEntity<DishDto> updateDish(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("name") String dishName,
+            @RequestBody DishDto updateDishDto){
+        return null;
     }
 
     @DeleteMapping("{id}")
