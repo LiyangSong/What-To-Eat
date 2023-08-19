@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -34,4 +36,15 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDto.class);
     }
+
+    @Override
+    public Set<Dish> getDishesByUsername(String username) {
+        User user = userRepository.findByName(username)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
+        return user.getDishes();
+    }
+
+
+
+
 }
