@@ -15,5 +15,5 @@ import lombok.Setter;
 public class UserIngredientInventoryDto {
     private Long userId;
     private Long ingredientId;
-    private int userIngredientInventory;
+    private int ingredientAmount;
 }
