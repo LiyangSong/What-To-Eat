@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Liyang
@@ -38,13 +38,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<Dish> getDishesByUsername(String username) {
-        User user = userRepository.findByName(username)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
-        return user.getDishes();
+    @Transactional(rollbackFor = ApiException.class)
+    public List<DishDto> getDishesByUserName(String userName) {
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userName: " + userName));
+        Set<Dish> dishes = user.getDishes();
+        return dishes.stream()
+                .map(dish -> modelMapper.map(dish, DishDto.class))
+                .collect(Collectors.toList());
     }
-
-
-
-
 }
