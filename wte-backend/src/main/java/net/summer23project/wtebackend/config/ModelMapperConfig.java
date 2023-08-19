@@ -1,16 +1,10 @@
 package net.summer23project.wtebackend.config;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
-import net.summer23project.wtebackend.dto.IngredientDto;
-import net.summer23project.wtebackend.entity.Dish;
-import net.summer23project.wtebackend.entity.DishIngredientAmount;
-import net.summer23project.wtebackend.entity.Ingredient;
-import net.summer23project.wtebackend.entity.Unit;
+import net.summer23project.wtebackend.dto.*;
+import net.summer23project.wtebackend.entity.*;
 import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.repository.DishRepository;
-import net.summer23project.wtebackend.repository.IngredientRepository;
-import net.summer23project.wtebackend.repository.UnitRepository;
+import net.summer23project.wtebackend.repository.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -28,6 +22,8 @@ public class ModelMapperConfig {
     private UnitRepository unitRepository;
     private DishRepository dishRepository;
     private IngredientRepository ingredientRepository;
+    private NutrientRepository nutrientRepository;
+    private UserRepository userRepository;
 
     @Bean
     public ModelMapper modelMapper(){
@@ -39,10 +35,9 @@ public class ModelMapperConfig {
         // Customize mapper from Ingredient to Dto
 
         TypeMap<Ingredient, IngredientDto> ingredientMapToDto = modelMapper.createTypeMap(Ingredient.class, IngredientDto.class);
-        ingredientMapToDto.addMappings(mapper -> {
-            mapper.skip(IngredientDto::setId);
-            mapper.map(src -> src.getUnit().getId(), IngredientDto::setUnitId);
-        });
+        ingredientMapToDto.addMappings(mapper ->
+            mapper.map(src -> src.getUnit().getId(), IngredientDto::setUnitId)
+        );
 
         // Customize mapper from IngredientDto to Entity
 
@@ -53,10 +48,9 @@ public class ModelMapperConfig {
         };
 
         TypeMap<IngredientDto, Ingredient> ingredientDtoMapToEntity = modelMapper.createTypeMap(IngredientDto.class, Ingredient.class);
-        ingredientDtoMapToEntity.addMappings(mapper -> {
-            mapper.skip(Ingredient::setId);
-            mapper.using(unitIdToUnitConverter).map(IngredientDto::getUnitId, Ingredient::setUnit);
-        });
+        ingredientDtoMapToEntity.addMappings(mapper ->
+            mapper.using(unitIdToUnitConverter).map(IngredientDto::getUnitId, Ingredient::setUnit)
+        );
 
 
         // Customize mapper from DishIngredientAmount to Dto
@@ -86,6 +80,61 @@ public class ModelMapperConfig {
             mapper.skip(DishIngredientAmount::setId);
             mapper.using(dishIdToDishConverter).map(DishIngredientAmountDto::getDishId, DishIngredientAmount::setDish);
             mapper.using(ingredientIdToIngredientConverter).map(DishIngredientAmountDto::getIngredientId, DishIngredientAmount::setIngredient);
+        });
+
+        // Customize mapper from IngredientNutrientAmount to Dto
+
+        TypeMap<IngredientNutrientAmount, IngredientNutrientAmountDto> ingredientNutrientAmountMapToDto = modelMapper.createTypeMap(IngredientNutrientAmount.class, IngredientNutrientAmountDto.class);
+        ingredientNutrientAmountMapToDto.addMappings(mapper -> {
+            mapper.map(src -> src.getIngredient().getId(), IngredientNutrientAmountDto::setIngredientId);
+            mapper.map(src -> src.getNutrient().getId(), IngredientNutrientAmountDto::setNutrientId);
+        });
+
+        // Customize mapper from IngredientNutrientAmountDto to Entity
+
+        Converter<Long, Nutrient> nutrientIdToNutrientConverter = context -> {
+            Long nutrientId = context.getSource();
+            return nutrientRepository.findById(nutrientId)
+                    .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Nutrient does not exist with given dishId: " + nutrientId));
+        };
+
+        TypeMap<IngredientNutrientAmountDto, IngredientNutrientAmount> ingredientNutrientAmountDtoMapToEntity = modelMapper.createTypeMap(IngredientNutrientAmountDto.class, IngredientNutrientAmount.class);
+        ingredientNutrientAmountDtoMapToEntity.addMappings(mapper -> {
+            mapper.skip(IngredientNutrientAmount::setId);
+            mapper.using(ingredientIdToIngredientConverter).map(IngredientNutrientAmountDto::getIngredientId, IngredientNutrientAmount::setIngredient);
+            mapper.using(nutrientIdToNutrientConverter).map(IngredientNutrientAmountDto::getNutrientId, IngredientNutrientAmount::setNutrient);
+        });
+
+        // Customize mapper from User to Dto
+
+        TypeMap<User, UserDto> userMapToDto = modelMapper.createTypeMap(User.class, UserDto.class);
+        userMapToDto.addMappings(mapper ->
+            mapper.map(src -> src.getGender().getId(), UserDto::setGenderId)
+        );
+
+        // Note: Not necessary to map from UserDto to User, not created here
+
+        // Customize mapper from UserIngredientInventory to Dto
+
+        TypeMap<UserIngredientInventory, UserIngredientInventoryDto> userIngredientInventoryMapToDto = modelMapper.createTypeMap(UserIngredientInventory.class, UserIngredientInventoryDto.class);
+        userIngredientInventoryMapToDto.addMappings(mapper -> {
+            mapper.map(src -> src.getUser().getId(), UserIngredientInventoryDto::setUserId);
+            mapper.map(src -> src.getIngredient().getId(), UserIngredientInventoryDto::setIngredientId);
+        });
+
+        // Customize mapper from UserIngredientInventoryDto to Entity
+
+        Converter<Long, User> userIdToUserConverter = context -> {
+            Long userId = context.getSource();
+            return userRepository.findById(userId)
+                    .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userId: " + userId));
+        };
+
+        TypeMap<UserIngredientInventoryDto, UserIngredientInventory> userIngredientInventoryDtoMapToEntity = modelMapper.createTypeMap(UserIngredientInventoryDto.class, UserIngredientInventory.class);
+        userIngredientInventoryDtoMapToEntity.addMappings(mapper -> {
+            mapper.skip(UserIngredientInventory::setId);
+            mapper.using(userIdToUserConverter).map(UserIngredientInventoryDto::getUserId, UserIngredientInventory::setUser);
+            mapper.using(ingredientIdToIngredientConverter).map(UserIngredientInventoryDto::getIngredientId, UserIngredientInventory::setIngredient);
         });
 
         return modelMapper;

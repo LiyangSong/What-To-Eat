@@ -18,5 +18,4 @@ public class UserDto {
     private String email;
     private Integer age;
     private Long genderId;
-    private Long roleId;
 }

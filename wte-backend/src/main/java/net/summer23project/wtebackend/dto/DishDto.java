@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 /**
  * @author Liyang
  */
@@ -17,6 +15,4 @@ import java.util.List;
 public class DishDto {
     private Long id;
     private String name;
-
-    private List<DishIngredientAmountDto> dishIngredientAmounts;
 }

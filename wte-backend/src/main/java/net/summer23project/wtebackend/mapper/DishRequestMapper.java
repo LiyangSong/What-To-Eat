@@ -23,7 +23,7 @@ public class DishRequestMapper {
     private IngredientRepository ingredientRepository;
 
     // request format will be a JSON, e.g.
-    // {"dishName": "Sandwich", "ingredient": ["ingredientName": "bread", "ingredientAmount": 2]}
+    // {"dishName": "Sandwich", "ingredient": [{"ingredientName": "bread", "ingredientAmount": 2}, ...]}
 
     public DishDto mapToDishDto(Map<String, Object> requestBody) {
         String dishName = (String) requestBody.get("dishName");
