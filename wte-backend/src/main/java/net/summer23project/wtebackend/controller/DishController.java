@@ -1,10 +1,11 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
+import net.summer23project.wtebackend.dto.DishDetailsDto;
 import net.summer23project.wtebackend.dto.DishDto;
 import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
 import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.mapper.DishRequestMapper;
+import net.summer23project.wtebackend.mapper.DishDetailsMapper;
 import net.summer23project.wtebackend.service.DishIngredientAmountService;
 import net.summer23project.wtebackend.service.DishService;
 import net.summer23project.wtebackend.service.UserService;
@@ -15,8 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yue, Liyang
@@ -29,33 +30,39 @@ public class DishController {
     private DishService dishService;
     private UserService userService;
     private DishIngredientAmountService dishIngredientAmountService;
-    private DishRequestMapper dishRequestMapper;
+    private DishDetailsMapper dishDetailsMapper;
 
     // Post http://localhost:8080/api/dishes
     @PostMapping
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<DishDto> createDish(
+    public ResponseEntity<DishDetailsDto> createDish(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody Map<String, Object> requestBody) {
+            @RequestBody DishDetailsDto dishDetailsDto) {
 
-        DishDto dishDto = dishRequestMapper.mapToDishDto(requestBody);
+        DishDto dishDto = dishDetailsMapper.mapToDishDto(dishDetailsDto);
         DishDto savedDishDto = dishService.createDish(dishDto);
 
         String userName = userDetails.getUsername();
         userService.updateUserWithAddedDish(userName, savedDishDto);
 
-        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishRequestMapper.mapToDishIngredientAmountDtos(requestBody);
+        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishDetailsMapper.mapToDishIngredientAmountDtos(dishDetailsDto);
+        List<DishIngredientAmountDto> savedDishIngredientAmountDtos = new ArrayList<>();
         for (DishIngredientAmountDto dishIngredientAmountDto : dishIngredientAmountDtos) {
-            dishIngredientAmountService.createDishIngredientAmount(dishIngredientAmountDto);
+            DishIngredientAmountDto savedDishIngredientAmountDto = dishIngredientAmountService.createDishIngredientAmount(dishIngredientAmountDto);
+            savedDishIngredientAmountDtos.add(savedDishIngredientAmountDto);
         }
 
-        return new ResponseEntity<>(savedDishDto, HttpStatus.CREATED);
+        DishDetailsDto savedDishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(
+                savedDishDto, savedDishIngredientAmountDtos
+        );
+
+        return new ResponseEntity<>(savedDishDetailsDto, HttpStatus.CREATED);
     }
 
     // Get http://localhost:8080/api/dishes/{name}
     @GetMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<DishDto> getDishByName(
+    public ResponseEntity<DishDetailsDto> getDishByName(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName){
 
@@ -64,13 +71,18 @@ public class DishController {
         DishDto dishDto = dishService.getDishByName(dishName);
 
         boolean dishExistsInUserDishes = userDishes.stream()
-                .anyMatch(userDish -> userDish.getId().equals(dishDto.getId()));
+                .anyMatch(userDish -> userDish.getName().equals(dishDto.getName()));
 
         if (!dishExistsInUserDishes) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
         }
 
-        return new ResponseEntity<>(dishDto, HttpStatus.OK);
+        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishIngredientAmountService.getDishIngredientAmountDtosByDishName(dishName);
+
+        DishDetailsDto dishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(
+                dishDto, dishIngredientAmountDtos
+        );
+        return new ResponseEntity<>(dishDetailsDto, HttpStatus.OK);
     }
 
     @GetMapping
