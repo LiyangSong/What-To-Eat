@@ -8,9 +8,13 @@ import net.summer23project.wtebackend.entity.Dish;
 import net.summer23project.wtebackend.entity.User;
 import net.summer23project.wtebackend.entity.UserIngredientInventory;
 import net.summer23project.wtebackend.exception.ApiException;
+import net.summer23project.wtebackend.mapper.DishMapper;
+import net.summer23project.wtebackend.mapper.UserMapper;
+import net.summer23project.wtebackend.repository.DishRepository;
+import net.summer23project.wtebackend.repository.IngredientRepository;
+import net.summer23project.wtebackend.repository.UserIngredientInventoryRepository;
 import net.summer23project.wtebackend.repository.UserRepository;
 import net.summer23project.wtebackend.service.UserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,19 +30,28 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-    private ModelMapper modelMapper;
+    private DishRepository dishRepository;
+    private IngredientRepository ingredientRepository;
+    private UserIngredientInventoryRepository userIngredientInventoryRepository;
+    private UserMapper userMapper;
+    private DishMapper dishMapper;
+
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public UserDto updateUserWithAddedDish(String userName, DishDto dishDto) {
         User user = userRepository.findByName(userName)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userName: " + userName));
 
-        Set<Dish> dishes = user.getDishes();
-        dishes.add(modelMapper.map(dishDto, Dish.class));
-        user.setDishes(dishes);
+        String dishName = dishDto.getName();
+        Dish dish = dishRepository.findByName(dishName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
 
+        Set<Dish> dishes = user.getDishes();
+        dishes.add(dish);
+        user.setDishes(dishes);
         User savedUser = userRepository.save(user);
-        return modelMapper.map(savedUser, UserDto.class);
+
+        return userMapper.mapToUserDto(savedUser);
     }
 
     @Override
@@ -48,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userName: " + userName));
         Set<Dish> dishes = user.getDishes();
         return dishes.stream()
-                .map(dish -> modelMapper.map(dish, DishDto.class))
+                .map(dish -> dishMapper.mapToDishDto(dish))
                 .collect(Collectors.toList());
     }
 
@@ -60,12 +73,22 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByName(userName)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userName: " + userName));
+        Long userId = user.getId();
+
+        String ingredientName = userIngredientInventoryDto.getIngredientName();
+        Long ingredientId = ingredientRepository.findByName(ingredientName)
+                        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName))
+                .getId();
+
+        UserIngredientInventory userIngredientInventory = userIngredientInventoryRepository.findByUserIdAndIngredientId(userId, ingredientId)
+                .orElseThrow(()  -> new ApiException(HttpStatus.BAD_REQUEST, "UserIngredientInventory does not exist with given userId: " + userId + " and ingredientId: " + ingredientId));
+
 
         Set<UserIngredientInventory> userIngredientInventories= user.getUserIngredientInventories();
-        userIngredientInventories.add(modelMapper.map(userIngredientInventoryDto, UserIngredientInventory.class));
+        userIngredientInventories.add(userIngredientInventory);
         user.setUserIngredientInventories(userIngredientInventories);
-
         User savedUser = userRepository.save(user);
-        return modelMapper.map(savedUser, UserDto.class);
+
+        return userMapper.mapToUserDto(savedUser);
     }
 }
