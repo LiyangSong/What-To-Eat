@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Yue, Liyang
@@ -77,34 +78,36 @@ public class DishController {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
         }
 
-        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishIngredientAmountService.getDishIngredientAmountDtosByDishName(dishName);
-
-        DishDetailsDto dishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(
-                dishDto, dishIngredientAmountDtos
-        );
+        DishDetailsDto dishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(dishDto);
         return new ResponseEntity<>(dishDetailsDto, HttpStatus.OK);
     }
 
     @GetMapping
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<List<DishDto>> getAllDishes(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<List<DishDetailsDto>> getAllDishes(@AuthenticationPrincipal UserDetails userDetails){
         String userName = userDetails.getUsername();
-        List<DishDto> userDishes = userService.getDishesByUserName(userName);
-        return new ResponseEntity<>(userDishes, HttpStatus.OK);
+        List<DishDto> dishDtos = userService.getDishesByUserName(userName);
+
+        List<DishDetailsDto> dishDetailsDtos = dishDtos.stream().map(dishDto ->
+            dishDetailsMapper.mapToDishDetailsDto(dishDto)
+        ).collect(Collectors.toList());
+        return new ResponseEntity<>(dishDetailsDtos, HttpStatus.OK);
     }
 
     @PutMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<DishDto> updateDish(
+    public ResponseEntity<DishDetailsDto> updateDish(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName,
-            @RequestBody DishDto updateDishDto){
+            @RequestBody DishDetailsDto updateDishDetailsDto){
         return null;
     }
 
     @DeleteMapping("{id}")
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<String> deleteDish(@PathVariable("id") Long dishId,@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<String> deleteDish(
+            @PathVariable("id") Long dishId,
+            @AuthenticationPrincipal UserDetails userDetails){
         dishService.deleteDish(dishId, userDetails.getUsername());
         return ResponseEntity.ok("Dish deleted successfully!");
     }

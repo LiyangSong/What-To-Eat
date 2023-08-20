@@ -1,8 +1,13 @@
 package net.summer23project.wtebackend.mapper;
 
+import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.DishDetailsDto;
 import net.summer23project.wtebackend.dto.DishDto;
 import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.exception.ApiException;
+import net.summer23project.wtebackend.repository.DishIngredientAmountRepository;
+import net.summer23project.wtebackend.repository.DishRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,7 +19,10 @@ import java.util.stream.Collectors;
  * @author Liyang
  */
 @Service
+@AllArgsConstructor
 public class DishDetailsMapper {
+    private DishRepository dishRepository;
+    private DishIngredientAmountRepository dishIngredientAmountRepository;
     public DishDto mapToDishDto (DishDetailsDto dishDetailsDto) {
         return new DishDto(dishDetailsDto.getDishName());
     }
@@ -51,5 +59,25 @@ public class DishDetailsMapper {
                     return ingredientAmountMap;
                 }).collect(Collectors.toList())
         );
+    }
+
+    // With only one argument, will retrieve ingredientAmount from database
+    public DishDetailsDto mapToDishDetailsDto(DishDto dishDto) {
+        String dishName = dishDto.getName();
+        Long dishId = dishRepository.findByName(dishName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName))
+                .getId();
+
+        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishIngredientAmountRepository.findByDishId(dishId)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "DishIngredientAmount does not exist with given dishId: " + dishId))
+                .stream().map(dishIngredientAmount ->
+                     new DishIngredientAmountDto(
+                           dishIngredientAmount.getDish().getName(),
+                           dishIngredientAmount.getIngredient().getName(),
+                           dishIngredientAmount.getIngredientAmount()
+                    )
+                ).collect(Collectors.toList());
+
+        return mapToDishDetailsDto(dishDto, dishIngredientAmountDtos);
     }
 }
