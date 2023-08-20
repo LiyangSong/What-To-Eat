@@ -54,4 +54,14 @@ public class IngredientController {
 
         return new ResponseEntity<>(savedIngredientDetailsDto, HttpStatus.CREATED);
     }
+
+    @GetMapping("{name}")
+    @Transactional(rollbackFor = ApiException.class)
+    public ResponseEntity<IngredientDetailsDto> getIngredientByName(
+            @PathVariable("name") String ingredientName) {
+
+        IngredientDto ingredientDto = ingredientService.getIngredientByName(ingredientName);
+        IngredientDetailsDto ingredientDetailsDto = ingredientDetailsMapper.mapToIngredientDetailsDto(ingredientDto);
+        return new ResponseEntity<>(ingredientDetailsDto, HttpStatus.OK);
+    }
 }

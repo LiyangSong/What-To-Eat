@@ -7,6 +7,7 @@ import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.mapper.IngredientMapper;
 import net.summer23project.wtebackend.repository.IngredientRepository;
 import net.summer23project.wtebackend.service.IngredientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +33,10 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public IngredientDto getIngredientById(Long ingredientId) {
-        return null;
+    public IngredientDto getIngredientByName(String ingredientName) {
+        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
+        return ingredientMapper.mapToIngredientDto(ingredient);
     }
 
     @Override

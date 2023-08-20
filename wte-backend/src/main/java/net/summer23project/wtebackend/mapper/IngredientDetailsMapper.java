@@ -1,8 +1,13 @@
 package net.summer23project.wtebackend.mapper;
 
+import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.IngredientDetailsDto;
 import net.summer23project.wtebackend.dto.IngredientDto;
 import net.summer23project.wtebackend.dto.IngredientNutrientAmountDto;
+import net.summer23project.wtebackend.exception.ApiException;
+import net.summer23project.wtebackend.repository.IngredientNutrientAmountRepository;
+import net.summer23project.wtebackend.repository.IngredientRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,7 +19,11 @@ import java.util.stream.Collectors;
  * @author Liyang
  */
 @Service
+@AllArgsConstructor
 public class IngredientDetailsMapper {
+    private IngredientRepository ingredientRepository;
+    private IngredientNutrientAmountRepository ingredientNutrientAmountRepository;
+
     public IngredientDto mapToIngredientDto(
             IngredientDetailsDto ingredientDetailsDto) {
         return new IngredientDto(
@@ -56,5 +65,27 @@ public class IngredientDetailsMapper {
                     return nutrientAmountMap;
                 }).collect(Collectors.toList())
         );
+    }
+
+    // With only one argument, will retrieve nutrientAmount from database
+    public IngredientDetailsDto mapToIngredientDetailsDto(
+            IngredientDto ingredientDto) {
+
+        String ingredientName = ingredientDto.getName();
+        Long ingredientId = ingredientRepository.findByName(ingredientName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName))
+                .getId();
+
+        List<IngredientNutrientAmountDto> ingredientNutrientAmountDtos = ingredientNutrientAmountRepository.findByIngredientId(ingredientId)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "IngredientNutrientAmount does not exist with given ingredientId: " + ingredientId))
+                .stream().map(ingredientNutrientAmount ->
+                        new IngredientNutrientAmountDto(
+                                ingredientNutrientAmount.getIngredient().getName(),
+                                ingredientNutrientAmount.getNutrient().getName(),
+                                ingredientNutrientAmount.getNutrientAmount()
+                        )
+                ).collect(Collectors.toList());
+
+        return mapToIngredientDetailsDto(ingredientDto, ingredientNutrientAmountDtos);
     }
 }
