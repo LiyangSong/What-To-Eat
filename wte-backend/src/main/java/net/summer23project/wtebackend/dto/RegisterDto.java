@@ -17,5 +17,5 @@ public class RegisterDto {
     private String password;
     private String email;
     private Integer age;
-    private Long genderId;
+    private String genderName;
 }

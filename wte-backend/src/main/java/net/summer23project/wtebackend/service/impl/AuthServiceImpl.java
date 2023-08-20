@@ -51,8 +51,11 @@ public class AuthServiceImpl implements AuthService {
         user.setName(registerDto.getName());
         user.setEmail(registerDto.getEmail());
         user.setAge(registerDto.getAge());
-        user.setGender(genderRepository.findById(registerDto.getGenderId())
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Gender id not exists!")));
+
+        String genderName = registerDto.getGenderName();
+        user.setGender(genderRepository.findByName(genderName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Gender does not exists with given genderName: " + genderName)));
+
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
         Set<Role> roles = new HashSet<>();

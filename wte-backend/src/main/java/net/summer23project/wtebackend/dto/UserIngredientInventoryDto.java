@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserIngredientInventoryDto {
-    private Long userId;
-    private Long ingredientId;
+    private String userName;
+    private String ingredientName;
     private int ingredientAmount;
 }
