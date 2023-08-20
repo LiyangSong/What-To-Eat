@@ -84,7 +84,9 @@ public class DishController {
 
     @GetMapping
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<List<DishDetailsDto>> getAllDishes(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<List<DishDetailsDto>> getAllDishes(
+            @AuthenticationPrincipal UserDetails userDetails){
+
         String userName = userDetails.getUsername();
         List<DishDto> dishDtos = userService.getDishesByUserName(userName);
 
@@ -103,13 +105,12 @@ public class DishController {
         return null;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<String> deleteDish(
-            @PathVariable("id") Long dishId,
+            @PathVariable("name") String dishName,
             @AuthenticationPrincipal UserDetails userDetails){
-        dishService.deleteDish(dishId, userDetails.getUsername());
-        return ResponseEntity.ok("Dish deleted successfully!");
+        return null;
     }
 
 }
