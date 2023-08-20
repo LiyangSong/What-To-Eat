@@ -1,6 +1,7 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
+import net.summer23project.wtebackend.dto.DishDetailsDto;
 import net.summer23project.wtebackend.dto.IngredientDetailsDto;
 import net.summer23project.wtebackend.dto.IngredientDto;
 import net.summer23project.wtebackend.dto.IngredientNutrientAmountDto;
@@ -63,5 +64,26 @@ public class IngredientController {
         IngredientDto ingredientDto = ingredientService.getIngredientByName(ingredientName);
         IngredientDetailsDto ingredientDetailsDto = ingredientDetailsMapper.mapToIngredientDetailsDto(ingredientDto);
         return new ResponseEntity<>(ingredientDetailsDto, HttpStatus.OK);
+    }
+
+    @GetMapping
+    @Transactional(rollbackFor = ApiException.class)
+    public ResponseEntity<List<IngredientDetailsDto>> getAllIngredients() {
+        return null;
+    }
+
+    @PutMapping("{name}")
+    @Transactional(rollbackFor = ApiException.class)
+    public ResponseEntity<IngredientDetailsDto> updateIngredient(
+            @PathVariable("name") String ingredientName,
+            @RequestBody DishDetailsDto updateIngredientDetailsDto){
+        return null;
+    }
+
+    @DeleteMapping("{name}")
+    @Transactional(rollbackFor = ApiException.class)
+    public ResponseEntity<String> deleteIngredient(
+            @PathVariable("name") String ingredientName){
+        return null;
     }
 }
