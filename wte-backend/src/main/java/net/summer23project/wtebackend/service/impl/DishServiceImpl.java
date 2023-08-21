@@ -56,7 +56,9 @@ public class DishServiceImpl implements DishService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void deleteDish(Long dishId, String userName) {
-
+    public void deleteDish(String dishName) {
+        Dish dish = dishRepository.findByName(dishName)
+                        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
+        dishRepository.delete(dish);
     }
 }

@@ -88,9 +88,9 @@ public class DishController {
             @AuthenticationPrincipal UserDetails userDetails){
 
         String userName = userDetails.getUsername();
-        List<DishDto> dishDtos = userService.getDishesByUserName(userName);
+        List<DishDto> userDishes = userService.getDishesByUserName(userName);
 
-        List<DishDetailsDto> dishDetailsDtos = dishDtos.stream().map(
+        List<DishDetailsDto> dishDetailsDtos = userDishes.stream().map(
             dishDetailsMapper::mapToDishDetailsDto
         ).collect(Collectors.toList());
         return new ResponseEntity<>(dishDetailsDtos, HttpStatus.OK);
@@ -110,7 +110,19 @@ public class DishController {
     public ResponseEntity<String> deleteDish(
             @PathVariable("name") String dishName,
             @AuthenticationPrincipal UserDetails userDetails){
-        return null;
-    }
 
+        String userName = userDetails.getUsername();
+        List<DishDto> userDishes = userService.getDishesByUserName(userName);
+        DishDto dishDto = dishService.getDishByName(dishName);
+
+        boolean dishExistsInUserDishes = userDishes.stream()
+                .anyMatch(userDish -> userDish.getName().equals(dishDto.getName()));
+
+        if (!dishExistsInUserDishes) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
+        }
+
+        dishService.deleteDish(dishName);
+        return new ResponseEntity<>("Delete dish " + dishName + " successfully", HttpStatus.NO_CONTENT);
+    }
 }

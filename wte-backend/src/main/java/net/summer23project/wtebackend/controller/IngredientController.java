@@ -82,6 +82,9 @@ public class IngredientController {
     public ResponseEntity<IngredientDetailsDto> updateIngredient(
             @PathVariable("name") String ingredientName,
             @RequestBody DishDetailsDto updateIngredientDetailsDto){
+
+
+
         return null;
     }
 
@@ -89,6 +92,8 @@ public class IngredientController {
     @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<String> deleteIngredient(
             @PathVariable("name") String ingredientName){
-        return null;
+
+        ingredientService.deleteIngredient(ingredientName);
+        return new ResponseEntity<>("Delete ingredient " + ingredientName + " successfully", HttpStatus.NO_CONTENT);
     }
 }

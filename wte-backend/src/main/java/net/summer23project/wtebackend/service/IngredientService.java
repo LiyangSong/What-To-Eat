@@ -12,6 +12,6 @@ public interface IngredientService {
     IngredientDto getIngredientByName(String ingredientName);
     List<IngredientDto> getAllIngredients();
     IngredientDto updateIngredient(Long ingredientId, IngredientDto updatedIngredient);
-    void deleteIngredient(Long ingredientId);
+    void deleteIngredient(String ingredientName);
 
 }

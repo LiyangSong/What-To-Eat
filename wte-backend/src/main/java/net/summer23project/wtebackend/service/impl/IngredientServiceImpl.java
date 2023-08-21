@@ -57,7 +57,9 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void deleteIngredient(Long ingredientId) {
-
+    public void deleteIngredient(String ingredientName) {
+        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
+        ingredientRepository.delete(ingredient);
     }
 }
