@@ -27,9 +27,9 @@ public class Dish {
     @Column(name = "dish_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "dish")
+    @OneToMany(mappedBy = "dish", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<DishIngredientAmount> dishIngredientAmounts = new HashSet<>();
 
-    @ManyToMany(mappedBy = "dishes")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "dish", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<UserDishMapping> userDishMappings = new HashSet<>();
 }

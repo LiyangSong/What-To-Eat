@@ -24,11 +24,11 @@ public class UserIngredientInventory {
     @Column(name = "ingredient_amount", nullable = false)
     private int ingredientAmount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 }

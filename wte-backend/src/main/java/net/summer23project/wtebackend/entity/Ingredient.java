@@ -27,17 +27,17 @@ public class Ingredient {
     @Column(name = "ingredient_name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<DishIngredientAmount> dishIngredientAmounts = new HashSet<>();
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();
 
 }

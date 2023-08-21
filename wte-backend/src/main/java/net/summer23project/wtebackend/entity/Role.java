@@ -27,6 +27,6 @@ public class Role {
     @Column(name = "role_name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<UserRoleMapping> userRoleMappings = new HashSet<>();
 }

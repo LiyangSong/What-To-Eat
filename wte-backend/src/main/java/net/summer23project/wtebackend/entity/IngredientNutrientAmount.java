@@ -24,11 +24,11 @@ public class IngredientNutrientAmount {
     @Column(name = "nutrient_amount", nullable = false)
     private int nutrientAmount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "nutrient_id")
     private Nutrient nutrient;
 }

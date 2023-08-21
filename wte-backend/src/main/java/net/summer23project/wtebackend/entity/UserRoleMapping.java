@@ -10,25 +10,22 @@ import lombok.Setter;
  * @author Liyang
  */
 @Entity
-@Table(name = "Dish_Ingredient_Amounts")
+@Table(name = "User_Role_Mappings")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishIngredientAmount {
+public class UserRoleMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dish_ingredient_amount_id")
+    @Column(name = "user_role_mapping_id")
     private Long id;
 
-    @Column(name = "ingredient_amount", nullable = false)
-    private int ingredientAmount;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "dish_id")
-    private Dish dish;
-
-    @ManyToOne
-    @JoinColumn(name = "ingredient_id")
-    private Ingredient ingredient;
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

@@ -27,6 +27,6 @@ public class Gender {
     @Column(name = "gender_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "gender")
+    @OneToMany(mappedBy = "gender", cascade = {CascadeType.MERGE})
     private Set<User> users = new HashSet<>();
 }

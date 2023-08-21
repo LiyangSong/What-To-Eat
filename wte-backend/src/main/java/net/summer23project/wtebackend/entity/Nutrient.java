@@ -27,10 +27,10 @@ public class Nutrient {
     @Column(name = "nutrient_name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    @OneToMany(mappedBy = "nutrient")
+    @OneToMany(mappedBy = "nutrient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
 }

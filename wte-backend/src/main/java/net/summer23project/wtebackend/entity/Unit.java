@@ -27,9 +27,9 @@ public class Unit {
     @Column(name = "unit_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "unit")
+    @OneToMany(mappedBy = "unit", cascade = {CascadeType.MERGE})
     private Set<Ingredient> ingredients = new HashSet<>();
 
-    @OneToMany(mappedBy = "unit")
+    @OneToMany(mappedBy = "unit", cascade = {CascadeType.MERGE})
     private Set<Nutrient> nutrients = new HashSet<>();
 }
