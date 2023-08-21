@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -33,4 +34,26 @@ public class Nutrient {
 
     @OneToMany(mappedBy = "nutrient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Nutrient nutrient = (Nutrient) obj;
+        if (nutrient.getName() == null || this.getName() == null) {
+            return false;
+        }
+
+        return  Objects.equals(nutrient.getName(), this.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getName());
+    }
 }

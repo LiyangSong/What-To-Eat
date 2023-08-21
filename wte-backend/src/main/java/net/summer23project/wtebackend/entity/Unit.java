@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -32,4 +33,26 @@ public class Unit {
 
     @OneToMany(mappedBy = "unit", cascade = {CascadeType.MERGE})
     private Set<Nutrient> nutrients = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Unit unit = (Unit) obj;
+        if (unit.getName() == null || this.getName() == null) {
+            return false;
+        }
+
+        return  Objects.equals(unit.getName(), this.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getName());
+    }
 }

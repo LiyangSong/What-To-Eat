@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * @author Liyang
  */
@@ -28,4 +30,28 @@ public class UserRoleMapping {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        UserRoleMapping userRoleMapping = ( UserRoleMapping) obj;
+        if (userRoleMapping.getUser() == null || this.getUser() == null ||
+                userRoleMapping.getRole() == null || this.getRole() == null) {
+            return false;
+        }
+
+        return Objects.equals(userRoleMapping.getUser(), this.getUser()) &&
+                Objects.equals(userRoleMapping.getRole(), this.getRole());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getUser(), this.getRole());
+    }
 }

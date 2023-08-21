@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * @author Liyang
  */
@@ -31,4 +33,29 @@ public class IngredientNutrientAmount {
     @ManyToOne
     @JoinColumn(name = "nutrient_id")
     private Nutrient nutrient;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        IngredientNutrientAmount ingredientNutrientAmount = (IngredientNutrientAmount) obj;
+        if (ingredientNutrientAmount.getIngredient() == null || this.getIngredient() == null ||
+                ingredientNutrientAmount.getNutrient() == null || this.getNutrient() == null) {
+            return false;
+        }
+
+        return Objects.equals(ingredientNutrientAmount.getIngredient(), this.getIngredient()) &&
+                Objects.equals(ingredientNutrientAmount.getNutrient(), this.getNutrient());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getIngredient(), this.getNutrient());
+    }
+
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -48,4 +49,28 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        User user = (User) obj;
+        if (user.getName() == null || this.getName() == null ||
+                user.getEmail() == null || this.getEmail() == null) {
+            return false;
+        }
+
+        return  Objects.equals(user.getName(), this.getName()) &&
+                Objects.equals(user.getEmail(), this.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getName(), this.getEmail());
+    }
 }
