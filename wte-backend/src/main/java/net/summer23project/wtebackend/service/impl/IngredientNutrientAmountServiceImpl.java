@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 public class IngredientNutrientAmountServiceImpl implements IngredientNutrientAmountService {
-    private IngredientNutrientMapper ingredientNutrientMapper;
-    private IngredientNutrientAmountRepository ingredientNutrientAmountRepository;
+    private final IngredientNutrientMapper ingredientNutrientMapper;
+    private final IngredientNutrientAmountRepository ingredientNutrientAmountRepository;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)

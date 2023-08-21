@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private DishRepository dishRepository;
-    private IngredientRepository ingredientRepository;
-    private UserIngredientInventoryRepository userIngredientInventoryRepository;
-    private UserMapper userMapper;
-    private DishMapper dishMapper;
+    private final UserRepository userRepository;
+    private final DishRepository dishRepository;
+    private final IngredientRepository ingredientRepository;
+    private final UserIngredientInventoryRepository userIngredientInventoryRepository;
+    private final UserMapper userMapper;
+    private final DishMapper dishMapper;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)

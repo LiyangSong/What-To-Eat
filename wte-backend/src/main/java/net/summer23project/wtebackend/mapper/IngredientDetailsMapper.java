@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class IngredientDetailsMapper {
-    private IngredientRepository ingredientRepository;
-    private IngredientNutrientAmountRepository ingredientNutrientAmountRepository;
+    private final IngredientRepository ingredientRepository;
+    private final IngredientNutrientAmountRepository ingredientNutrientAmountRepository;
 
     public IngredientDto mapToIngredientDto(
             IngredientDetailsDto ingredientDetailsDto) {

@@ -21,8 +21,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class DishDetailsMapper {
-    private DishRepository dishRepository;
-    private DishIngredientAmountRepository dishIngredientAmountRepository;
+    private final DishRepository dishRepository;
+    private final DishIngredientAmountRepository dishIngredientAmountRepository;
+
     public DishDto mapToDishDto (DishDetailsDto dishDetailsDto) {
         return new DishDto(dishDetailsDto.getDishName());
     }

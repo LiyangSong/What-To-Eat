@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class DishIngredientAmountServiceImpl implements DishIngredientAmountService {
-    private DishRepository dishRepository;
-    private DishIngredientAmountRepository dishIngredientAmountRepository;
-    private DishIngredientMapper dishIngredientMapper;
+    private final DishRepository dishRepository;
+    private final DishIngredientAmountRepository dishIngredientAmountRepository;
+    private final DishIngredientMapper dishIngredientMapper;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)

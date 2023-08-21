@@ -29,9 +29,9 @@ import java.util.List;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class IngredientController {
-    private IngredientService ingredientService;
-    private IngredientNutrientAmountService ingredientNutrientAmountService;
-    private IngredientDetailsMapper ingredientDetailsMapper;
+    private final IngredientService ingredientService;
+    private final IngredientNutrientAmountService ingredientNutrientAmountService;
+    private final IngredientDetailsMapper ingredientDetailsMapper;
 
     // Post http://localhost:8080/api/ingredients
     @PostMapping

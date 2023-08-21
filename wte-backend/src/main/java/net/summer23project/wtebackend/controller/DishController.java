@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class DishController {
-    private DishService dishService;
-    private UserService userService;
-    private DishIngredientAmountService dishIngredientAmountService;
-    private DishDetailsMapper dishDetailsMapper;
+    private final DishService dishService;
+    private final UserService userService;
+    private final DishIngredientAmountService dishIngredientAmountService;
+    private final DishDetailsMapper dishDetailsMapper;
 
     // Post http://localhost:8080/api/dishes
     @PostMapping

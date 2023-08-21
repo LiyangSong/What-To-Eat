@@ -22,8 +22,8 @@ import java.io.IOException;
 @AllArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private JwtTokenProvider jwtTokenProvider;
-    private UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
     // Get token from HTTP request
     private String getTokenFromRequest(HttpServletRequest request) {

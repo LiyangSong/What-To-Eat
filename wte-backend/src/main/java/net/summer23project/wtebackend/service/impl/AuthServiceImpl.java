@@ -29,12 +29,12 @@ import java.util.Set;
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private GenderRepository genderRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-    private JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final GenderRepository genderRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)

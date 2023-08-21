@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserIngredientMapper {
-    private UserRepository userRepository;
-    private IngredientRepository ingredientRepository;
+    private final UserRepository userRepository;
+    private final IngredientRepository ingredientRepository;
 
     public UserIngredientInventoryDto mapToUserIngredientInventoryDto(
             UserIngredientInventory userIngredientInventory) {

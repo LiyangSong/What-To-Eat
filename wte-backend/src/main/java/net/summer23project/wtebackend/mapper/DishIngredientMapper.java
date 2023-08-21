@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class DishIngredientMapper {
-    private DishRepository dishRepository;
-    private IngredientRepository ingredientRepository;
+    private final DishRepository dishRepository;
+    private final IngredientRepository ingredientRepository;
 
     public DishIngredientAmountDto mapToDishIngredientAmountDto(
             DishIngredientAmount dishIngredientAmount) {

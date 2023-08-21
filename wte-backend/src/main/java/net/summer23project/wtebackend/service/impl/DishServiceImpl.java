@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class DishServiceImpl implements DishService {
-    private DishRepository dishRepository;
-    private DishMapper dishMapper;
+    private final DishRepository dishRepository;
+    private final DishMapper dishMapper;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)

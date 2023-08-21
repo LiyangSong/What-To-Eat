@@ -20,8 +20,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class IngredientServiceImpl implements IngredientService {
-    private IngredientRepository ingredientRepository;
-    private IngredientMapper ingredientMapper;
+    private final IngredientRepository ingredientRepository;
+    private final IngredientMapper ingredientMapper;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
