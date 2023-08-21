@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userName: " + userName));
         Set<Dish> dishes = user.getDishes();
         return dishes.stream()
-                .map(dish -> dishMapper.mapToDishDto(dish))
+                .map(dishMapper::mapToDishDto)
                 .collect(Collectors.toList());
     }
 

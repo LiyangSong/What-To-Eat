@@ -90,8 +90,8 @@ public class DishController {
         String userName = userDetails.getUsername();
         List<DishDto> dishDtos = userService.getDishesByUserName(userName);
 
-        List<DishDetailsDto> dishDetailsDtos = dishDtos.stream().map(dishDto ->
-            dishDetailsMapper.mapToDishDetailsDto(dishDto)
+        List<DishDetailsDto> dishDetailsDtos = dishDtos.stream().map(
+            dishDetailsMapper::mapToDishDetailsDto
         ).collect(Collectors.toList());
         return new ResponseEntity<>(dishDetailsDtos, HttpStatus.OK);
     }

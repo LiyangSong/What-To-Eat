@@ -47,8 +47,8 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
         List<DishIngredientAmount> dishIngredientAmounts = dishIngredientAmountRepository.findByDishId(dishId)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "DishIngredientAmount does not exist with given dishId: " + dishId));
 
-        return dishIngredientAmounts.stream().map(dishIngredientAmount ->
-                dishIngredientMapper.mapToDishIngredientAmountDto(dishIngredientAmount)
+        return dishIngredientAmounts.stream().map(
+                dishIngredientMapper::mapToDishIngredientAmountDto
         ).collect(Collectors.toList());
     }
 }

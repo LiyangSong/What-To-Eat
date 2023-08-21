@@ -44,7 +44,7 @@ public class DishServiceImpl implements DishService {
     public List<DishDto> getAllDishes() {
         List<Dish> dishes = dishRepository.findAll();
         return dishes.stream()
-                .map(dish -> dishMapper.mapToDishDto(dish))
+                .map(dishMapper::mapToDishDto)
                 .collect(Collectors.toList());
     }
 
