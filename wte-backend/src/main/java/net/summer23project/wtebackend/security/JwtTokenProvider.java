@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -16,12 +15,11 @@ import java.util.Date;
  * @author Liyang
  */
 @Component
-@AllArgsConstructor
 public class JwtTokenProvider {
     @Value("${app.jwt-secret}")
-    private final String jwtSecret;
+    private String jwtSecret;
     @Value("${app.jwt-expiration-milliseconds}")
-    private final long jwtExpirationDate;
+    private long jwtExpirationDate;
 
     // Apply HMAC algorithm to generate signature from secret
     private Key key() {
