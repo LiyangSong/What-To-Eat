@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Yue, Liyang
@@ -42,7 +43,10 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientDto> getAllIngredients() {
-        return null;
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        return ingredients.stream().map(
+                ingredientMapper::mapToIngredientDto)
+                .collect(Collectors.toList());
     }
 
     @Override

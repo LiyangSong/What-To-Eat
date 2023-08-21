@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -69,7 +70,11 @@ public class IngredientController {
     @GetMapping
     @Transactional(rollbackFor = ApiException.class)
     public ResponseEntity<List<IngredientDetailsDto>> getAllIngredients() {
-        return null;
+        List<IngredientDetailsDto> ingredientDetailsDtos = ingredientService.getAllIngredients()
+                .stream().map(ingredientDetailsMapper::mapToIngredientDetailsDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(ingredientDetailsDtos, HttpStatus.OK);
     }
 
     @PutMapping("{name}")
