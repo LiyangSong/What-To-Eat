@@ -11,7 +11,7 @@ public interface DishService {
     DishDto createDish(DishDto dishDto);
     DishDto getDishByName(String dishName);
     List<DishDto> getAllDishes();
-    DishDto updateDish(String dishName, DishDto updatedDish);
+    void updateDish(String dishName, DishDto updatedDish);
     void deleteDish(String dishName);
 
 }

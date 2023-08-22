@@ -50,12 +50,11 @@ public class DishServiceImpl implements DishService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishDto updateDish(String dishName, DishDto updatedDishDto) {
+    public void updateDish(String dishName, DishDto updatedDishDto) {
         Dish dish = dishRepository.findByName(dishName)
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
         dish.setName(updatedDishDto.getName());
-        Dish savedDish = dishRepository.save(dish);
-        return dishMapper.mapToDishDto(savedDish);
+        dishRepository.save(dish);
     }
 
     @Override
