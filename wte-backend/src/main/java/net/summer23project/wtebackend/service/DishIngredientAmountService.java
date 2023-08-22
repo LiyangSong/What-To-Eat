@@ -10,4 +10,5 @@ import java.util.List;
 public interface DishIngredientAmountService {
     DishIngredientAmountDto createDishIngredientAmount(DishIngredientAmountDto dishIngredientAmountDto);
     List<DishIngredientAmountDto> getDishIngredientAmountDtosByDishName(String dishName);
+    DishIngredientAmountDto updateDishIngredientAmount(DishIngredientAmountDto dishIngredientAmountDto, DishIngredientAmountDto updatedDishIngredientAmountDto);
 }
