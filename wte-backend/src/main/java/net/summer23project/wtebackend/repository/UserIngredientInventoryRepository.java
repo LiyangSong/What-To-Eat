@@ -10,4 +10,5 @@ import java.util.Optional;
  */
 public interface UserIngredientInventoryRepository extends JpaRepository<UserIngredientInventory, Long> {
     Optional<UserIngredientInventory> findByUserIdAndIngredientId(Long userId, Long ingredientId);
+    Boolean existsByUserIdAndIngredientId(Long userId, Long ingredientId);
 }

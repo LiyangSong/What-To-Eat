@@ -11,4 +11,5 @@ import java.util.Optional;
  */
 public interface IngredientNutrientAmountRepository extends JpaRepository<IngredientNutrientAmount, Long> {
     Optional<List<IngredientNutrientAmount>> findByIngredientId(Long ingredientId);
+    Boolean existsByIngredientIdAndNutrientId(Long ingredientId, Long nutrientId);
 }

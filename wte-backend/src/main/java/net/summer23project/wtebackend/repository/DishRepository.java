@@ -10,4 +10,5 @@ import java.util.Optional;
  */
 public interface DishRepository extends JpaRepository<Dish, Long> {
     Optional<Dish> findByName(String name);
+    Boolean existsByName(String name);
 }
