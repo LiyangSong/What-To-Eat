@@ -11,4 +11,5 @@ import java.util.Optional;
  */
 public interface DishIngredientAmountRepository extends JpaRepository<DishIngredientAmount, Long> {
     Optional<List<DishIngredientAmount>> findByDishId(Long dishId);
+    Boolean existsByDishIdAndIngredientId(Long dishId, Long ingredientId);
 }
