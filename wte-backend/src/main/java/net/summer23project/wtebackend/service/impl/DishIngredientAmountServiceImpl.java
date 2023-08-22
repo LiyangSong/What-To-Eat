@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +59,7 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishIngredientAmountDto updateDishIngredientAmount(
+    public void updateDishIngredientAmount(
             DishIngredientAmountDto dishIngredientAmountDto,
             DishIngredientAmountDto updatedDishIngredientAmountDto) {
 
@@ -66,7 +67,6 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
 
         if (updatedDishIngredientAmountDto.getIngredientAmount() <= 0) {
             dishIngredientAmountRepository.delete(dishIngredientAmount);
-            return null;
         }
 
         String updatedDishName = updatedDishIngredientAmountDto.getDishName();
@@ -81,8 +81,40 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
         dishIngredientAmount.setIngredient(updatedIngredient);
         dishIngredientAmount.setIngredientAmount(updatedDishIngredientAmountDto.getIngredientAmount());
 
-        DishIngredientAmount savedDishIngredientAmount = dishIngredientAmountRepository.save(dishIngredientAmount);
+        dishIngredientAmountRepository.save(dishIngredientAmount);
+    }
 
-        return dishIngredientAmountMapper.mapToDishIngredientAmountDto(savedDishIngredientAmount);
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public void deleteDishIngredientAmount(DishIngredientAmountDto dishIngredientAmountDto) {
+        DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountDto);
+        dishIngredientAmountRepository.delete(dishIngredientAmount);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public void updateDishIngredientAmountList(
+            List<DishIngredientAmountDto> dishIngredientAmountDtos,
+            List<DishIngredientAmountDto> updatedDishIngredientAmountDtos) {
+
+        for (DishIngredientAmountDto updatedDto : updatedDishIngredientAmountDtos) {
+            Optional<DishIngredientAmountDto> existingDtoOptional = dishIngredientAmountDtos.stream()
+                    .filter(dto -> dto.equals(updatedDto))
+                    .findFirst();
+
+            if(existingDtoOptional.isPresent()) {
+                DishIngredientAmountDto existingDto = existingDtoOptional.get();
+                updateDishIngredientAmount(existingDto, updatedDto);
+            } else {
+                createDishIngredientAmount(updatedDto);
+            }
+        }
+
+        for (DishIngredientAmountDto existingDto : dishIngredientAmountDtos) {
+            if (updatedDishIngredientAmountDtos.stream()
+                    .noneMatch(updatedDto -> updatedDto.equals(existingDto))) {
+                deleteDishIngredientAmount(existingDto);
+            }
+        }
     }
 }

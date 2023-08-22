@@ -8,7 +8,16 @@ import java.util.List;
  * @author Liyang
  */
 public interface DishIngredientAmountService {
-    DishIngredientAmountDto createDishIngredientAmount(DishIngredientAmountDto dishIngredientAmountDto);
-    List<DishIngredientAmountDto> getDishIngredientAmountDtosByDishName(String dishName);
-    DishIngredientAmountDto updateDishIngredientAmount(DishIngredientAmountDto dishIngredientAmountDto, DishIngredientAmountDto updatedDishIngredientAmountDto);
+    DishIngredientAmountDto createDishIngredientAmount(
+            DishIngredientAmountDto dishIngredientAmountDto);
+    List<DishIngredientAmountDto> getDishIngredientAmountDtosByDishName(
+            String dishName);
+    void updateDishIngredientAmount(
+            DishIngredientAmountDto dishIngredientAmountDto,
+            DishIngredientAmountDto updatedDishIngredientAmountDto);
+    void deleteDishIngredientAmount(
+            DishIngredientAmountDto dishIngredientAmountDto);
+    void updateDishIngredientAmountList(
+            List<DishIngredientAmountDto> dishIngredientAmountDtos,
+            List<DishIngredientAmountDto> updatedDishIngredientAmountDtos);
 }
