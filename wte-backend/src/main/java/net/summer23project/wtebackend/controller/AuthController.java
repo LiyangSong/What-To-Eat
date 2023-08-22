@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.JwtAuthResponseDto;
 import net.summer23project.wtebackend.dto.LoginDto;
 import net.summer23project.wtebackend.dto.RegisterDto;
+import net.summer23project.wtebackend.dto.UserDto;
 import net.summer23project.wtebackend.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto){
-        String response = authService.register(registerDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<UserDto> register(@RequestBody RegisterDto registerDto){
+        UserDto userDto = authService.register(registerDto);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
