@@ -19,15 +19,15 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String nameOrEmail) throws UsernameNotFoundException {
         User user = userRepository.findByNameOrEmail(nameOrEmail, nameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not exists by Username or Email"));
 
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map((role) -> new SimpleGrantedAuthority(role.getName()))
+        Set<GrantedAuthority> authorities = user.getUserRoleMappings().stream()
+                .map(userRoleMapping -> new SimpleGrantedAuthority(userRoleMapping.getRole().getName()))
                 .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails.User(

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * @author Liyang
  */
@@ -24,11 +26,35 @@ public class DishIngredientAmount {
     @Column(name = "ingredient_amount", nullable = false)
     private int ingredientAmount;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "dish_id")
     private Dish dish;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        DishIngredientAmount dishIngredientAmount = (DishIngredientAmount) obj;
+        if (dishIngredientAmount.getDish() == null || this.getDish() == null ||
+                dishIngredientAmount.getIngredient() == null || this.getIngredient() == null) {
+            return false;
+        }
+
+        return Objects.equals(dishIngredientAmount.getDish(), this.getDish()) &&
+                Objects.equals(dishIngredientAmount.getIngredient(), this.getIngredient());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getDish(), this.getIngredient());
+    }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -27,9 +28,31 @@ public class Dish {
     @Column(name = "dish_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "dish")
+    @OneToMany(mappedBy = "dish", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<DishIngredientAmount> dishIngredientAmounts = new HashSet<>();
 
-    @ManyToMany(mappedBy = "dishes")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "dish", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<UserDishMapping> userDishMappings = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Dish dish = (Dish) obj;
+        if (dish.getName() == null || this.getName() == null) {
+            return false;
+        }
+
+        return  Objects.equals(dish.getName(), this.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getName());
+    }
 }

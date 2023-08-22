@@ -13,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NutrientDto {
-    private Long id;
     private String name;
-    private Long unitId;
+    private String unitName;
 }

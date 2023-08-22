@@ -6,34 +6,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * @author Liyang
  */
 @Entity
-@Table(name = "Nutrients")
+@Table(name = "User_Role_Mappings")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Nutrient {
+public class UserRoleMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nutrient_id")
+    @Column(name = "user_role_mapping_id")
     private Long id;
 
-    @Column(name = "nutrient_name", nullable = false, unique = true)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
-
-    @OneToMany(mappedBy = "nutrient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private Set<IngredientNutrientAmount> ingredientNutrientAmounts = new HashSet<>();
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @Override
     public boolean equals(Object obj) {
@@ -44,16 +40,18 @@ public class Nutrient {
             return false;
         }
 
-        Nutrient nutrient = (Nutrient) obj;
-        if (nutrient.getName() == null || this.getName() == null) {
+        UserRoleMapping userRoleMapping = ( UserRoleMapping) obj;
+        if (userRoleMapping.getUser() == null || this.getUser() == null ||
+                userRoleMapping.getRole() == null || this.getRole() == null) {
             return false;
         }
 
-        return  Objects.equals(nutrient.getName(), this.getName());
+        return Objects.equals(userRoleMapping.getUser(), this.getUser()) &&
+                Objects.equals(userRoleMapping.getRole(), this.getRole());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hash(this.getUser(), this.getRole());
     }
 }

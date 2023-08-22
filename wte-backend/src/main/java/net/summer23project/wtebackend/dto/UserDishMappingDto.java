@@ -12,10 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterDto {
-    private String name;
-    private String password;
-    private String email;
-    private Integer age;
-    private String genderName;
+public class UserDishMappingDto {
+    private String userName;
+    private String dishName;
 }

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Liyang
  */
@@ -12,10 +15,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterDto {
-    private String name;
-    private String password;
-    private String email;
-    private Integer age;
-    private String genderName;
+public class DishDetailsDto {
+    private String dishName;
+    private List<Map<String, Object>> ingredientAmountMaps;
 }

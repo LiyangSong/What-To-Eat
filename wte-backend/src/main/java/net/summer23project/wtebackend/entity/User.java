@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -36,24 +37,40 @@ public class User {
     @Column(name = "user_age")
     private Integer age;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "gender_id")
     private Gender gender;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
-    @JoinTable(name = "Users_Roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-    )
-    private Set<Role> roles  = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<UserDishMapping> userDishMappings = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL )
-    @JoinTable(name = "Users_Dishes",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "dish_id", referencedColumnName = "dish_id")
-    )
-    private Set<Dish> dishes = new HashSet<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<UserRoleMapping> userRoleMappings = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        User user = (User) obj;
+        if (user.getName() == null || this.getName() == null ||
+                user.getEmail() == null || this.getEmail() == null) {
+            return false;
+        }
+
+        return  Objects.equals(user.getName(), this.getName()) &&
+                Objects.equals(user.getEmail(), this.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getName(), this.getEmail());
+    }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -27,6 +28,28 @@ public class Gender {
     @Column(name = "gender_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "gender")
+    @OneToMany(mappedBy = "gender", cascade = {CascadeType.MERGE})
     private Set<User> users = new HashSet<>();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Gender gender = (Gender) obj;
+        if (gender.getName() == null || this.getName() == null) {
+            return false;
+        }
+
+        return  Objects.equals(gender.getName(), this.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getName());
+    }
 }

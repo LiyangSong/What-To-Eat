@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface IngredientService {
     IngredientDto createIngredient(IngredientDto ingredientDto);
-    IngredientDto getIngredientById(Long ingredientId);
+    IngredientDto getIngredientByName(String ingredientName);
     List<IngredientDto> getAllIngredients();
     IngredientDto updateIngredient(Long ingredientId, IngredientDto updatedIngredient);
-    void deleteIngredient(Long ingredientId);
+    void deleteIngredient(String ingredientName);
 
 }

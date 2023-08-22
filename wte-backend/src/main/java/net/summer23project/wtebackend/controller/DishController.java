@@ -1,22 +1,24 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishDto;
-import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.dto.*;
 import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.mapper.DishRequestMapper;
+import net.summer23project.wtebackend.mapper.DishDetailsMapper;
+import net.summer23project.wtebackend.mapper.DishMapper;
 import net.summer23project.wtebackend.service.DishIngredientAmountService;
 import net.summer23project.wtebackend.service.DishService;
-import net.summer23project.wtebackend.service.UserService;
+import net.summer23project.wtebackend.service.UserDishMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Yue, Liyang
@@ -26,75 +28,113 @@ import java.util.Map;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class DishController {
-    private DishService dishService;
-    private UserService userService;
-    private DishIngredientAmountService dishIngredientAmountService;
-    private DishRequestMapper dishRequestMapper;
+    private final DishService dishService;
+    private final UserDishMappingService userDishMappingService;
+    private final DishIngredientAmountService dishIngredientAmountService;
+    private final DishDetailsMapper dishDetailsMapper;
 
     // Post http://localhost:8080/api/dishes
     @PostMapping
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<DishDto> createDish(
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<DishDetailsDto> createDish(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody Map<String, Object> requestBody) {
+            @RequestBody DishDetailsDto dishDetailsDto) {
 
-        DishDto dishDto = dishRequestMapper.mapToDishDto(requestBody);
+        DishDto dishDto = dishDetailsMapper.mapToDishDto(dishDetailsDto);
         DishDto savedDishDto = dishService.createDish(dishDto);
 
         String userName = userDetails.getUsername();
-        userService.updateUserWithAddedDish(userName, savedDishDto);
 
-        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishRequestMapper.mapToDishIngredientAmountDtos(requestBody);
+        UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
+                userName, dishDto.getName()
+        );
+        userDishMappingService.createUserDishMapping(userDishMappingDto);
+
+        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishDetailsMapper.mapToDishIngredientAmountDtos(dishDetailsDto);
+        List<DishIngredientAmountDto> savedDishIngredientAmountDtos = new ArrayList<>();
         for (DishIngredientAmountDto dishIngredientAmountDto : dishIngredientAmountDtos) {
-            dishIngredientAmountService.createDishIngredientAmount(dishIngredientAmountDto);
+            DishIngredientAmountDto savedDishIngredientAmountDto = dishIngredientAmountService.createDishIngredientAmount(dishIngredientAmountDto);
+            savedDishIngredientAmountDtos.add(savedDishIngredientAmountDto);
         }
 
-        return new ResponseEntity<>(savedDishDto, HttpStatus.CREATED);
+        DishDetailsDto savedDishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(
+                savedDishDto, savedDishIngredientAmountDtos
+        );
+
+        return new ResponseEntity<>(savedDishDetailsDto, HttpStatus.CREATED);
     }
 
     // Get http://localhost:8080/api/dishes/{name}
     @GetMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<DishDto> getDishByName(
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<DishDetailsDto> getDishByName(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName){
 
         String userName = userDetails.getUsername();
-        List<DishDto> userDishes = userService.getDishesByUserName(userName);
+        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
+
         DishDto dishDto = dishService.getDishByName(dishName);
 
-        boolean dishExistsInUserDishes = userDishes.stream()
-                .anyMatch(userDish -> userDish.getId().equals(dishDto.getId()));
+        boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
+                .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishDto.getName()));
 
-        if (!dishExistsInUserDishes) {
+        if (!dishExistsInUserDishMappings) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
         }
 
-        return new ResponseEntity<>(dishDto, HttpStatus.OK);
+        DishDetailsDto dishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(dishDto);
+        return new ResponseEntity<>(dishDetailsDto, HttpStatus.OK);
     }
 
     @GetMapping
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<List<DishDto>> getAllDishes(@AuthenticationPrincipal UserDetails userDetails){
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<DishDetailsDto>> getAllDishes(
+            @AuthenticationPrincipal UserDetails userDetails){
+
         String userName = userDetails.getUsername();
-        List<DishDto> userDishes = userService.getDishesByUserName(userName);
-        return new ResponseEntity<>(userDishes, HttpStatus.OK);
+        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
+
+        List<DishDetailsDto> dishDetailsDtos = userDishMappingDtos.stream().map(userDishMappingDto -> {
+            DishDto dishDto = dishService.getDishByName(userDishMappingDto.getDishName());
+            return dishDetailsMapper.mapToDishDetailsDto(dishDto);
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(dishDetailsDtos, HttpStatus.OK);
     }
 
     @PutMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<DishDto> updateDish(
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<DishDetailsDto> updateDish(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName,
-            @RequestBody DishDto updateDishDto){
+            @RequestBody DishDetailsDto updateDishDetailsDto){
         return null;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<String> deleteDish(@PathVariable("id") Long dishId,@AuthenticationPrincipal UserDetails userDetails){
-        dishService.deleteDish(dishId, userDetails.getUsername());
-        return ResponseEntity.ok("Dish deleted successfully!");
-    }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> deleteDish(
+            @PathVariable("name") String dishName,
+            @AuthenticationPrincipal UserDetails userDetails){
 
+        String userName = userDetails.getUsername();
+        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
+        DishDto dishDto = dishService.getDishByName(dishName);
+
+        boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
+                .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishDto.getName()));
+
+        if (!dishExistsInUserDishMappings) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
+        }
+
+        dishService.deleteDish(dishName);
+        return new ResponseEntity<>("Delete dish " + dishName + " successfully", HttpStatus.NO_CONTENT);
+    }
 }

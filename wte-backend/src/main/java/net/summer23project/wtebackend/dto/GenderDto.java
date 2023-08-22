@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author Liyang
  */
@@ -16,7 +13,5 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenderDto {
-    private Long id;
     private String name;
-    private Set<Long> userIds = new HashSet<>();
 }

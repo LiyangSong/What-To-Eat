@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IngredientNutrientAmountDto {
-    private Long ingredientId;
-    private Long nutrientId;
+    private String ingredientName;
+    private String nutrientName;
     private int nutrientAmount;
 }
