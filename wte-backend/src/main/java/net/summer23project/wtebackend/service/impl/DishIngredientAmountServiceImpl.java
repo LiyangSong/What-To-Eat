@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
 import net.summer23project.wtebackend.entity.DishIngredientAmount;
 import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.mapper.DishIngredientMapper;
+import net.summer23project.wtebackend.mapper.DishIngredientAmountMapper;
 import net.summer23project.wtebackend.repository.DishIngredientAmountRepository;
 import net.summer23project.wtebackend.repository.DishRepository;
 import net.summer23project.wtebackend.service.DishIngredientAmountService;
@@ -23,16 +23,16 @@ import java.util.stream.Collectors;
 public class DishIngredientAmountServiceImpl implements DishIngredientAmountService {
     private final DishRepository dishRepository;
     private final DishIngredientAmountRepository dishIngredientAmountRepository;
-    private final DishIngredientMapper dishIngredientMapper;
+    private final DishIngredientAmountMapper dishIngredientAmountMapper;
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public DishIngredientAmountDto createDishIngredientAmount(
             DishIngredientAmountDto dishIngredientAmountDto) {
 
-        DishIngredientAmount dishIngredientAmount = dishIngredientMapper.mapToDishIngredientAmount(dishIngredientAmountDto);
+        DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountDto);
         DishIngredientAmount savedDishIngredientAmount = dishIngredientAmountRepository.save(dishIngredientAmount);
-        return dishIngredientMapper.mapToDishIngredientAmountDto(savedDishIngredientAmount);
+        return dishIngredientAmountMapper.mapToDishIngredientAmountDto(savedDishIngredientAmount);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
                 .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "DishIngredientAmount does not exist with given dishId: " + dishId));
 
         return dishIngredientAmounts.stream().map(
-                dishIngredientMapper::mapToDishIngredientAmountDto
+                dishIngredientAmountMapper::mapToDishIngredientAmountDto
         ).collect(Collectors.toList());
     }
 }
