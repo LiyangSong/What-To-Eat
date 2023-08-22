@@ -1,14 +1,13 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishDetailsDto;
-import net.summer23project.wtebackend.dto.DishDto;
-import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.dto.*;
 import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.mapper.DishDetailsMapper;
+import net.summer23project.wtebackend.mapper.DishMapper;
 import net.summer23project.wtebackend.service.DishIngredientAmountService;
 import net.summer23project.wtebackend.service.DishService;
-import net.summer23project.wtebackend.service.UserService;
+import net.summer23project.wtebackend.service.UserDishMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DishController {
     private final DishService dishService;
-    private final UserService userService;
+    private final UserDishMappingService userDishMappingService;
     private final DishIngredientAmountService dishIngredientAmountService;
     private final DishDetailsMapper dishDetailsMapper;
 
@@ -44,7 +43,11 @@ public class DishController {
         DishDto savedDishDto = dishService.createDish(dishDto);
 
         String userName = userDetails.getUsername();
-        userService.updateUserWithAddedDish(userName, savedDishDto);
+
+        UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
+                userName, dishDto.getName()
+        );
+        userDishMappingService.createUserDishMapping(userDishMappingDto);
 
         List<DishIngredientAmountDto> dishIngredientAmountDtos = dishDetailsMapper.mapToDishIngredientAmountDtos(dishDetailsDto);
         List<DishIngredientAmountDto> savedDishIngredientAmountDtos = new ArrayList<>();
@@ -68,13 +71,14 @@ public class DishController {
             @PathVariable("name") String dishName){
 
         String userName = userDetails.getUsername();
-        List<DishDto> userDishes = userService.getDishesByUserName(userName);
+        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
+
         DishDto dishDto = dishService.getDishByName(dishName);
 
-        boolean dishExistsInUserDishes = userDishes.stream()
-                .anyMatch(userDish -> userDish.getName().equals(dishDto.getName()));
+        boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
+                .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishDto.getName()));
 
-        if (!dishExistsInUserDishes) {
+        if (!dishExistsInUserDishMappings) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
         }
 
@@ -88,11 +92,13 @@ public class DishController {
             @AuthenticationPrincipal UserDetails userDetails){
 
         String userName = userDetails.getUsername();
-        List<DishDto> userDishes = userService.getDishesByUserName(userName);
+        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
 
-        List<DishDetailsDto> dishDetailsDtos = userDishes.stream().map(
-            dishDetailsMapper::mapToDishDetailsDto
-        ).collect(Collectors.toList());
+        List<DishDetailsDto> dishDetailsDtos = userDishMappingDtos.stream().map(userDishMappingDto -> {
+            DishDto dishDto = dishService.getDishByName(userDishMappingDto.getDishName());
+            return dishDetailsMapper.mapToDishDetailsDto(dishDto);
+        }).collect(Collectors.toList());
+
         return new ResponseEntity<>(dishDetailsDtos, HttpStatus.OK);
     }
 
@@ -112,13 +118,13 @@ public class DishController {
             @AuthenticationPrincipal UserDetails userDetails){
 
         String userName = userDetails.getUsername();
-        List<DishDto> userDishes = userService.getDishesByUserName(userName);
+        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
         DishDto dishDto = dishService.getDishByName(dishName);
 
-        boolean dishExistsInUserDishes = userDishes.stream()
-                .anyMatch(userDish -> userDish.getName().equals(dishDto.getName()));
+        boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
+                .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishDto.getName()));
 
-        if (!dishExistsInUserDishes) {
+        if (!dishExistsInUserDishMappings) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
         }
 
