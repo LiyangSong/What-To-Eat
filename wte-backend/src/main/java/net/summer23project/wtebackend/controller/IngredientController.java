@@ -11,6 +11,7 @@ import net.summer23project.wtebackend.service.IngredientNutrientAmountService;
 import net.summer23project.wtebackend.service.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,6 +38,7 @@ public class IngredientController {
     // Post http://localhost:8080/api/ingredients
     @PostMapping
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<IngredientDetailsDto> createIngredient(
             @RequestBody IngredientDetailsDto ingredientDetailsDto) {
 
@@ -59,6 +61,7 @@ public class IngredientController {
 
     @GetMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<IngredientDetailsDto> getIngredientByName(
             @PathVariable("name") String ingredientName) {
 
@@ -69,6 +72,7 @@ public class IngredientController {
 
     @GetMapping
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<IngredientDetailsDto>> getAllIngredients() {
         List<IngredientDetailsDto> ingredientDetailsDtos = ingredientService.getAllIngredients()
                 .stream().map(ingredientDetailsMapper::mapToIngredientDetailsDto)
@@ -79,6 +83,7 @@ public class IngredientController {
 
     @PutMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<IngredientDetailsDto> updateIngredient(
             @PathVariable("name") String ingredientName,
             @RequestBody DishDetailsDto updateIngredientDetailsDto){
@@ -90,6 +95,7 @@ public class IngredientController {
 
     @DeleteMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<String> deleteIngredient(
             @PathVariable("name") String ingredientName){
 

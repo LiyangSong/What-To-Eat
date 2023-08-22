@@ -40,10 +40,7 @@ public class SpringSecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
                     authorize.requestMatchers("/api/auth/**").permitAll();
-                    authorize.requestMatchers("/api/**").permitAll(); // temp permit all request
-                    //authorize.requestMatchers(HttpMethod.POST, "/api/ingredients/**").permitAll();
                     authorize.anyRequest().authenticated();
-
                 }).httpBasic(Customizer.withDefaults());
 
         http.exceptionHandling((exception) ->

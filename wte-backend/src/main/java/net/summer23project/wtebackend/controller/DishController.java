@@ -10,6 +10,7 @@ import net.summer23project.wtebackend.service.DishService;
 import net.summer23project.wtebackend.service.UserDishMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,7 @@ public class DishController {
     // Post http://localhost:8080/api/dishes
     @PostMapping
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsDto> createDish(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody DishDetailsDto dishDetailsDto) {
@@ -66,6 +68,7 @@ public class DishController {
     // Get http://localhost:8080/api/dishes/{name}
     @GetMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsDto> getDishByName(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName){
@@ -88,6 +91,7 @@ public class DishController {
 
     @GetMapping
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<DishDetailsDto>> getAllDishes(
             @AuthenticationPrincipal UserDetails userDetails){
 
@@ -104,6 +108,7 @@ public class DishController {
 
     @PutMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsDto> updateDish(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName,
@@ -113,6 +118,7 @@ public class DishController {
 
     @DeleteMapping("{name}")
     @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<String> deleteDish(
             @PathVariable("name") String dishName,
             @AuthenticationPrincipal UserDetails userDetails){
