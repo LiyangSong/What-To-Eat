@@ -42,11 +42,12 @@ public class UserDishMappingServiceImpl implements UserDishMappingService {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
 
-        UserDishMapping userDishMapping = new UserDishMapping();
-        userDishMapping.setUser(user);
-        userDishMapping.setDish(dish);
+        UserDishMapping mapping = new UserDishMapping();
+        mapping.setUser(user);
+        mapping.setDish(dish);
 
-        return userDishMappingMapper.mapToUserDishMappingDto(userDishMapping);
+        UserDishMapping savedMapping = userDishMappingRepository.save(mapping);
+        return userDishMappingMapper.mapToUserDishMappingDto(savedMapping);
     }
 
     @Override

@@ -39,17 +39,17 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
 
-
         Long ingredientId = dishIngredientAmountCreateDto.getIngredientId();
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredient does not exist with ingredientId: " + ingredientId));
 
-        DishIngredientAmount dishIngredientAmount = new DishIngredientAmount();
-        dishIngredientAmount.setDish(dish);
-        dishIngredientAmount.setIngredient(ingredient);
-        dishIngredientAmount.setIngredientAmount(dishIngredientAmountCreateDto.getIngredientAmount());
+        DishIngredientAmount amount = new DishIngredientAmount();
+        amount.setDish(dish);
+        amount.setIngredient(ingredient);
+        amount.setIngredientAmount(dishIngredientAmountCreateDto.getIngredientAmount());
 
-        return dishIngredientAmountMapper.mapToDishIngredientAmountReturnDto(dishIngredientAmount);
+        DishIngredientAmount savedAmount = dishIngredientAmountRepository.save(amount);
+        return dishIngredientAmountMapper.mapToDishIngredientAmountReturnDto(savedAmount);
     }
 
     @Override
