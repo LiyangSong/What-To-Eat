@@ -25,7 +25,7 @@ public class Ingredient {
     @Column(name = "ingredient_id")
     private Long id;
 
-    @Column(name = "ingredient_name", nullable = false, unique = true)
+    @Column(name = "ingredient_name", nullable = false)
     private String name;
 
     @ManyToOne

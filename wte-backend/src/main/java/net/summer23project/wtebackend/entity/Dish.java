@@ -25,7 +25,7 @@ public class Dish {
     @Column(name = "dish_id")
     private Long id;
 
-    @Column(name = "dish_name", nullable = false, unique = true)
+    @Column(name = "dish_name", nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "dish", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
