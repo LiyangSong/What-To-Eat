@@ -41,11 +41,12 @@ public class User {
     @JoinColumn(name = "gender_id")
     private Gender gender;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserDishMapping> userDishMappings = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private Set<UserRoleMapping> userRoleMappings = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();

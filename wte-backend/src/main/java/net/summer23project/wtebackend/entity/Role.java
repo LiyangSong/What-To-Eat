@@ -28,8 +28,8 @@ public class Role {
     @Column(name = "role_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private Set<UserRoleMapping> userRoleMappings = new HashSet<>();
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    private Set<User> users = new HashSet<>();
 
     @Override
     public boolean equals(Object obj) {
