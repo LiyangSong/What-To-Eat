@@ -1,7 +1,8 @@
 package net.summer23project.wtebackend.mapper;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.dto.DishIngredientAmountCreateDto;
+import net.summer23project.wtebackend.dto.DishIngredientAmountReturnDto;
 import net.summer23project.wtebackend.entity.Dish;
 import net.summer23project.wtebackend.entity.DishIngredientAmount;
 import net.summer23project.wtebackend.entity.Ingredient;
@@ -10,50 +11,39 @@ import net.summer23project.wtebackend.repository.DishIngredientAmountRepository;
 import net.summer23project.wtebackend.repository.DishRepository;
 import net.summer23project.wtebackend.repository.IngredientRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Liyang
  */
-@Service
-@AllArgsConstructor
+@Component
 public class DishIngredientAmountMapper {
-    private final DishRepository dishRepository;
-    private final IngredientRepository ingredientRepository;
-    private final DishIngredientAmountRepository dishIngredientAmountRepository;
 
-    public DishIngredientAmountDto mapToDishIngredientAmountDto(
+    public DishIngredientAmountReturnDto mapToDishIngredientAmountReturnDto(
             DishIngredientAmount dishIngredientAmount) {
 
-        return new DishIngredientAmountDto(
+        return new DishIngredientAmountReturnDto(
+                dishIngredientAmount.getDish().getId(),
                 dishIngredientAmount.getDish().getName(),
+                dishIngredientAmount.getIngredient().getId(),
                 dishIngredientAmount.getIngredient().getName(),
                 dishIngredientAmount.getIngredientAmount()
         );
     }
 
-    public DishIngredientAmount mapToDishIngredientAmount(
-            DishIngredientAmountDto dishIngredientAmountDto) {
+    public Map<String, Object> mapToDishIngredientAmountMap(
+            DishIngredientAmountReturnDto amountReturnDto) {
 
-        String dishName = dishIngredientAmountDto.getDishName();
-        Dish dish = dishRepository.findByName(dishName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
-        Long dishId = dish.getId();
-
-        String ingredientName = dishIngredientAmountDto.getIngredientName();
-        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
-        Long ingredientId = ingredient.getId();
-
-        if (dishIngredientAmountRepository.existsByDishIdAndIngredientId(dishId, ingredientId)) {
-            throw new ApiException(HttpStatus.CONFLICT, "DishIngredientAmount already exists with given dishName: " + dishName + " and ingredientName: " + ingredientName);
-        }
-
-        DishIngredientAmount dishIngredientAmount = new DishIngredientAmount();
-        dishIngredientAmount.setDish(dish);
-        dishIngredientAmount.setIngredient(ingredient);
-        dishIngredientAmount.setIngredientAmount(dishIngredientAmountDto.getIngredientAmount());
-
-        return dishIngredientAmount;
+        Map<String, Object> amountReturnMap = new HashMap<>();
+        amountReturnMap.put("ingredientId", amountReturnDto.getIngredientId());
+        amountReturnMap.put("ingredientName", amountReturnDto.getIngredientName());
+        amountReturnMap.put("ingredientAmount", amountReturnDto.getIngredientAmount());
+        return amountReturnMap;
     }
 }

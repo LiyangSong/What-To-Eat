@@ -1,7 +1,8 @@
 package net.summer23project.wtebackend.service.impl;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.dto.DishIngredientAmountCreateDto;
+import net.summer23project.wtebackend.dto.DishIngredientAmountReturnDto;
 import net.summer23project.wtebackend.entity.Dish;
 import net.summer23project.wtebackend.entity.DishIngredientAmount;
 import net.summer23project.wtebackend.entity.Ingredient;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,89 +34,113 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishIngredientAmountDto createDishIngredientAmount(
-            DishIngredientAmountDto dishIngredientAmountDto) {
+    public DishIngredientAmountReturnDto create(DishIngredientAmountCreateDto dishIngredientAmountCreateDto) {
+        Long dishId = dishIngredientAmountCreateDto.getDishId();
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
 
-        DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountDto);
-        DishIngredientAmount savedDishIngredientAmount = dishIngredientAmountRepository.save(dishIngredientAmount);
-        return dishIngredientAmountMapper.mapToDishIngredientAmountDto(savedDishIngredientAmount);
+
+        Long ingredientId = dishIngredientAmountCreateDto.getIngredientId();
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredient does not exist with ingredientId: " + ingredientId));
+
+        DishIngredientAmount dishIngredientAmount = new DishIngredientAmount();
+        dishIngredientAmount.setDish(dish);
+        dishIngredientAmount.setIngredient(ingredient);
+        dishIngredientAmount.setIngredientAmount(dishIngredientAmountCreateDto.getIngredientAmount());
+
+        return dishIngredientAmountMapper.mapToDishIngredientAmountReturnDto(dishIngredientAmount);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public List<DishIngredientAmountDto> getDishIngredientAmountDtosByDishName(
-            String dishName) {
-
-        Long dishId = dishRepository.findByName(dishName)
-                        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName))
-                .getId();
-
+    public List<DishIngredientAmountReturnDto> getByDishId(Long dishId) {
         List<DishIngredientAmount> dishIngredientAmounts = dishIngredientAmountRepository.findByDishId(dishId)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "DishIngredientAmount does not exist with given dishId: " + dishId));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "DishIngredientAmount does not exist with given dishId: " + dishId));
+        return dishIngredientAmounts.stream()
+                .map(dishIngredientAmountMapper::mapToDishIngredientAmountReturnDto)
+                .collect(Collectors.toList());
+    }
 
-        return dishIngredientAmounts.stream().map(
-                dishIngredientAmountMapper::mapToDishIngredientAmountDto
-        ).collect(Collectors.toList());
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public List<DishIngredientAmountReturnDto> getByDishName(
+            String dishName) {
+        return null;
+        //Long dishId = dishRepository.findByName(dishName)
+        //                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName))
+        //        .getId();
+        //
+        //List<DishIngredientAmount> dishIngredientAmounts = dishIngredientAmountRepository.findByDishId(dishId)
+        //        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "DishIngredientAmount does not exist with given dishId: " + dishId));
+        //
+        //return dishIngredientAmounts.stream().map(
+        //        dishIngredientAmountMapper::mapToDishIngredientAmountDto
+        //).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void updateDishIngredientAmount(
-            DishIngredientAmountDto dishIngredientAmountDto,
-            DishIngredientAmountDto updatedDishIngredientAmountDto) {
-
-        DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountDto);
-
-        if (updatedDishIngredientAmountDto.getIngredientAmount() <= 0) {
-            dishIngredientAmountRepository.delete(dishIngredientAmount);
-        }
-
-        String updatedDishName = updatedDishIngredientAmountDto.getDishName();
-        Dish updatedDish = dishRepository.findByName(updatedDishName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + updatedDishName));
-
-        String updatedIngredientName = updatedDishIngredientAmountDto.getIngredientName();
-        Ingredient updatedIngredient = ingredientRepository.findByName(updatedIngredientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + updatedIngredientName));
-
-        dishIngredientAmount.setDish(updatedDish);
-        dishIngredientAmount.setIngredient(updatedIngredient);
-        dishIngredientAmount.setIngredientAmount(updatedDishIngredientAmountDto.getIngredientAmount());
-
-        dishIngredientAmountRepository.save(dishIngredientAmount);
+    public DishIngredientAmountCreateDto updateDishIngredientAmount(
+            DishIngredientAmountCreateDto dishIngredientAmountCreateDto,
+            DishIngredientAmountCreateDto updatedDishIngredientAmountCreateDto) {
+        return null;
+        //DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountCreateDto);
+        //
+        //dishIngredientAmountRepository.delete(dishIngredientAmount);
+        //
+        //String updatedDishName = updatedDishIngredientAmountCreateDto.getDishName();
+        //Dish updatedDish = dishRepository.findByName(updatedDishName)
+        //        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + updatedDishName));
+        //
+        //String updatedIngredientName = updatedDishIngredientAmountCreateDto.getIngredientName();
+        //Ingredient updatedIngredient = ingredientRepository.findByName(updatedIngredientName)
+        //        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + updatedIngredientName));
+        //
+        //dishIngredientAmount.setDish(updatedDish);
+        //dishIngredientAmount.setIngredient(updatedIngredient);
+        //dishIngredientAmount.setIngredientAmount(updatedDishIngredientAmountCreateDto.getIngredientAmount());
+        //
+        //DishIngredientAmount savedDishIngredientAmount = dishIngredientAmountRepository.save(dishIngredientAmount);
+        //return dishIngredientAmountMapper.mapToDishIngredientAmountDto(savedDishIngredientAmount);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void deleteDishIngredientAmount(DishIngredientAmountDto dishIngredientAmountDto) {
-        DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountDto);
-        dishIngredientAmountRepository.delete(dishIngredientAmount);
+    public void deleteDishIngredientAmount(DishIngredientAmountCreateDto dishIngredientAmountCreateDto) {
+        //DishIngredientAmount dishIngredientAmount = dishIngredientAmountMapper.mapToDishIngredientAmount(dishIngredientAmountCreateDto);
+        //dishIngredientAmountRepository.delete(dishIngredientAmount);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void updateDishIngredientAmountList(
-            List<DishIngredientAmountDto> dishIngredientAmountDtos,
-            List<DishIngredientAmountDto> updatedDishIngredientAmountDtos) {
-
-        for (DishIngredientAmountDto updatedDto : updatedDishIngredientAmountDtos) {
-            Optional<DishIngredientAmountDto> existingDtoOptional = dishIngredientAmountDtos.stream()
-                    .filter(dto -> dto.equals(updatedDto))
-                    .findFirst();
-
-            if(existingDtoOptional.isPresent()) {
-                DishIngredientAmountDto existingDto = existingDtoOptional.get();
-                updateDishIngredientAmount(existingDto, updatedDto);
-            } else {
-                createDishIngredientAmount(updatedDto);
-            }
-        }
-
-        for (DishIngredientAmountDto existingDto : dishIngredientAmountDtos) {
-            if (updatedDishIngredientAmountDtos.stream()
-                    .noneMatch(updatedDto -> updatedDto.equals(existingDto))) {
-                deleteDishIngredientAmount(existingDto);
-            }
-        }
+    public List<DishIngredientAmountCreateDto> updateDishIngredientAmountList(
+            List<DishIngredientAmountCreateDto> dishIngredientAmountCreateDtos,
+            List<DishIngredientAmountCreateDto> updatedDishIngredientAmountCreateDtos) {
+        return null;
+        //List<DishIngredientAmountCreateDto> savedUpdatedDtos = new ArrayList<>();
+        //
+        //for (DishIngredientAmountCreateDto updatedDto : updatedDishIngredientAmountCreateDtos) {
+        //    Optional<DishIngredientAmountCreateDto> existingDtoOptional = dishIngredientAmountCreateDtos.stream()
+        //            .filter(dto -> dto.equals(updatedDto))
+        //            .findFirst();
+        //
+        //    if(existingDtoOptional.isPresent()) {
+        //        DishIngredientAmountCreateDto existingDto = existingDtoOptional.get();
+        //        savedUpdatedDtos.add(updateDishIngredientAmount(existingDto, updatedDto));
+        //    } else {
+        //        savedUpdatedDtos.add(createDishIngredientAmount(updatedDto));
+        //    }
+        //}
+        //
+        //for (DishIngredientAmountCreateDto existingDto : dishIngredientAmountCreateDtos) {
+        //    if (updatedDishIngredientAmountCreateDtos.stream()
+        //            .noneMatch(updatedDto -> updatedDto.equals(existingDto))) {
+        //        deleteDishIngredientAmount(existingDto);
+        //    }
+        //}
+        //
+        //return savedUpdatedDtos;
     }
 }

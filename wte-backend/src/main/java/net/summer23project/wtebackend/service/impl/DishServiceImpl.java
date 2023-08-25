@@ -1,7 +1,8 @@
 package net.summer23project.wtebackend.service.impl;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishDto;
+import net.summer23project.wtebackend.dto.DishCreateDto;
+import net.summer23project.wtebackend.dto.DishReturnDto;
 import net.summer23project.wtebackend.entity.Dish;
 import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.mapper.DishMapper;
@@ -25,43 +26,55 @@ public class DishServiceImpl implements DishService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishDto createDish(DishDto dishDto) {
-        Dish dish = dishMapper.mapToDish(dishDto);
+    public DishReturnDto create(DishCreateDto dishCreateDto) {
+        Dish dish = new Dish();
+        dish.setName(dishCreateDto.getName());
         Dish savedDish = dishRepository.save(dish);
-        return dishMapper.mapToDishDto(savedDish);
+        return dishMapper.mapToDishReturnDto(savedDish);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishDto getDishByName(String dishName) {
-        Dish dish = dishRepository.findByName(dishName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
-        return dishMapper.mapToDishDto(dish);
+    public DishReturnDto getById(Long dishId) {
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
+        return dishMapper.mapToDishReturnDto(dish);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public List<DishDto> getAllDishes() {
-        List<Dish> dishes = dishRepository.findAll();
+    public List<DishReturnDto> getByName(String dishName) {
+        List<Dish> dishes = dishRepository.findAllByName(dishName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishName: " + dishName));
         return dishes.stream()
-                .map(dishMapper::mapToDishDto)
+                .map(dishMapper::mapToDishReturnDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void updateDish(String dishName, DishDto updatedDishDto) {
-        Dish dish = dishRepository.findByName(dishName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
-        dish.setName(updatedDishDto.getName());
-        dishRepository.save(dish);
+    public List<DishReturnDto> getAll() {
+        List<Dish> dishes = dishRepository.findAll();
+        return dishes.stream()
+                .map(dishMapper::mapToDishReturnDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public void deleteDish(String dishName) {
-        Dish dish = dishRepository.findByName(dishName)
-                        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist with given dishName: " + dishName));
+    public DishReturnDto update(Long dishId, String dishName) {
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
+        dish.setName(dishName);
+        Dish savedDish = dishRepository.save(dish);
+        return dishMapper.mapToDishReturnDto(savedDish);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public void delete(Long dishId) {
+        Dish dish = dishRepository.findById(dishId)
+                        .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
         dishRepository.delete(dish);
     }
 }

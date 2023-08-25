@@ -10,12 +10,13 @@ import net.summer23project.wtebackend.repository.IngredientNutrientAmountReposit
 import net.summer23project.wtebackend.repository.IngredientRepository;
 import net.summer23project.wtebackend.repository.NutrientRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Liyang
  */
-@Service
+@Component
 @AllArgsConstructor
 public class IngredientNutrientAmountMapper {
     private final IngredientRepository ingredientRepository;

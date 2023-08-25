@@ -1,6 +1,7 @@
 package net.summer23project.wtebackend.service;
 
-import net.summer23project.wtebackend.dto.DishIngredientAmountDto;
+import net.summer23project.wtebackend.dto.DishIngredientAmountCreateDto;
+import net.summer23project.wtebackend.dto.DishIngredientAmountReturnDto;
 
 import java.util.List;
 
@@ -8,16 +9,15 @@ import java.util.List;
  * @author Liyang
  */
 public interface DishIngredientAmountService {
-    DishIngredientAmountDto createDishIngredientAmount(
-            DishIngredientAmountDto dishIngredientAmountDto);
-    List<DishIngredientAmountDto> getDishIngredientAmountDtosByDishName(
-            String dishName);
-    void updateDishIngredientAmount(
-            DishIngredientAmountDto dishIngredientAmountDto,
-            DishIngredientAmountDto updatedDishIngredientAmountDto);
+    DishIngredientAmountReturnDto create(DishIngredientAmountCreateDto dishIngredientAmountCreateDto);
+    List<DishIngredientAmountReturnDto> getByDishId(Long dishId);
+    List<DishIngredientAmountReturnDto> getByDishName(String dishName);
+    DishIngredientAmountCreateDto updateDishIngredientAmount(
+            DishIngredientAmountCreateDto dishIngredientAmountCreateDto,
+            DishIngredientAmountCreateDto updatedDishIngredientAmountCreateDto);
     void deleteDishIngredientAmount(
-            DishIngredientAmountDto dishIngredientAmountDto);
-    void updateDishIngredientAmountList(
-            List<DishIngredientAmountDto> dishIngredientAmountDtos,
-            List<DishIngredientAmountDto> updatedDishIngredientAmountDtos);
+            DishIngredientAmountCreateDto dishIngredientAmountCreateDto);
+    List<DishIngredientAmountCreateDto> updateDishIngredientAmountList(
+            List<DishIngredientAmountCreateDto> dishIngredientAmountCreateDtos,
+            List<DishIngredientAmountCreateDto> updatedDishIngredientAmountCreateDtos);
 }

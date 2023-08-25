@@ -27,26 +27,29 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public IngredientDto createIngredient(IngredientDto ingredientDto) {
-        Ingredient ingredient = ingredientMapper.mapToIngredient(ingredientDto);
-        Ingredient savedIngredient = ingredientRepository.save(ingredient);
-        return ingredientMapper.mapToIngredientDto(savedIngredient);
+        return null;
+        //Ingredient ingredient = ingredientMapper.mapToIngredient(ingredientDto);
+        //Ingredient savedIngredient = ingredientRepository.save(ingredient);
+        //return ingredientMapper.mapToIngredientDto(savedIngredient);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public IngredientDto getIngredientByName(String ingredientName) {
-        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
-        return ingredientMapper.mapToIngredientDto(ingredient);
+        return null;
+        //Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+        //        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
+        //return ingredientMapper.mapToIngredientDto(ingredient);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientDto> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientRepository.findAll();
-        return ingredients.stream().map(
-                ingredientMapper::mapToIngredientDto)
-                .collect(Collectors.toList());
+        return null;
+        //List<Ingredient> ingredients = ingredientRepository.findAll();
+        //return ingredients.stream().map(
+        //        ingredientMapper::mapToIngredientDto)
+        //        .collect(Collectors.toList());
     }
 
     @Override
@@ -58,8 +61,8 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public void deleteIngredient(String ingredientName) {
-        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
-        ingredientRepository.delete(ingredient);
+        //Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+        //        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
+        //ingredientRepository.delete(ingredient);
     }
 }

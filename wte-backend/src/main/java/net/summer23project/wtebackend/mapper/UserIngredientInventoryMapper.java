@@ -10,12 +10,13 @@ import net.summer23project.wtebackend.repository.IngredientRepository;
 import net.summer23project.wtebackend.repository.UserIngredientInventoryRepository;
 import net.summer23project.wtebackend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Liyang
  */
-@Service
+@Component
 @AllArgsConstructor
 public class UserIngredientInventoryMapper {
     private final UserRepository userRepository;

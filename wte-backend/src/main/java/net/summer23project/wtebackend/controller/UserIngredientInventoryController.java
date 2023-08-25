@@ -19,20 +19,20 @@ import java.util.Map;
 @CrossOrigin("*")
 @AllArgsConstructor
 public class UserIngredientInventoryController {
-    @PostMapping
-    @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<UserIngredientInventoryDto> createUserIngredientInventory(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody Map<String, Object> requestBody){
-        return null;
-    }
-
-
-    @GetMapping("{name}")
-    @Transactional(rollbackFor = ApiException.class)
-    public ResponseEntity<UserIngredientInventoryDto> getUserIngredientInventoryByIngredientName(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("name") String ingredientName){
-        return null;
-    }
+    //@PostMapping
+    //@Transactional(rollbackFor = ApiException.class)
+    //public ResponseEntity<UserIngredientInventoryDto> createUserIngredientInventory(
+    //        @AuthenticationPrincipal UserDetails userDetails,
+    //        @RequestBody Map<String, Object> requestBody){
+    //    return null;
+    //}
+    //
+    //
+    //@GetMapping("{name}")
+    //@Transactional(rollbackFor = ApiException.class)
+    //public ResponseEntity<UserIngredientInventoryDto> getUserIngredientInventoryByIngredientName(
+    //        @AuthenticationPrincipal UserDetails userDetails,
+    //        @PathVariable("name") String ingredientName){
+    //    return null;
+    //}
 }

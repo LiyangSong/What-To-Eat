@@ -8,6 +8,6 @@ import java.util.List;
  * @author Liyang
  */
 public interface UserDishMappingService {
-    UserDishMappingDto createUserDishMapping(UserDishMappingDto userDishMappingDto);
+    UserDishMappingDto create(UserDishMappingDto userDishMappingDto);
     List<UserDishMappingDto> getUserDishMappingDtosByUserName(String userName);
 }
