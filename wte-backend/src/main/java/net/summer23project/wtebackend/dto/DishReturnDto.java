@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
-    private String nameOrEmail;
-    private String password;
+public class DishReturnDto {
+    private Long id;
+    private String name;
 }

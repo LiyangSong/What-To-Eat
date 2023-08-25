@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDishMappingDto {
-    private String userName;
-    private String dishName;
+    private Long userId;
+    private Long dishId;
 }

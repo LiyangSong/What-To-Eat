@@ -15,5 +15,5 @@ import lombok.Setter;
 public class IngredientNutrientAmountDto {
     private String ingredientName;
     private String nutrientName;
-    private int nutrientAmount;
+    private double nutrientAmount;
 }
