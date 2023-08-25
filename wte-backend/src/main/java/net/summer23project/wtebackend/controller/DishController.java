@@ -34,7 +34,7 @@ public class DishController {
     private final DishDetailsMapper dishDetailsMapper;
 
     // Post http://localhost:8080/api/dishes
-    @PostMapping
+    @PostMapping("create")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsReturnDto> createDish(
@@ -46,8 +46,18 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.CREATED);
     }
 
+    @PostMapping("add/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserDishMappingDto> addDish(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long dishId) {
+        UserDishMappingDto userDishMappingDto = dishFacade.addDish(dishId, userDetails.getUsername());
+        return new ResponseEntity<>(userDishMappingDto, HttpStatus.CREATED);
+    }
+
     // Get http://localhost:8080/api/dishes/{id}
-    @GetMapping("{id}")
+    @GetMapping("id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsReturnDto> getDishById(
@@ -57,11 +67,12 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("name={name}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<List<DishReturnDto>> getDishesByName(
-            @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<List<DishDetailsReturnDto>> getDishesByName(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("name") String dishName){
         return null;
         //String userName = userDetails.getUsername();
         //List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
@@ -74,13 +85,13 @@ public class DishController {
         //return new ResponseEntity<>(dishReturnDtos, HttpStatus.OK);
     }
 
-    @PutMapping("{name}")
+    @PutMapping("id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<DishReturnDto> updateDish(
+    public ResponseEntity<DishDetailsReturnDto> updateDish(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("name") String dishName,
-            @RequestBody DishReturnDto updateDishReturnDto){
+            @PathVariable("id") Long dishId,
+            @RequestBody DishDetailsCreateDto udpatedDishDetailsCreateDto){
         return null;
         //String userName = userDetails.getUsername();
         //List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
@@ -105,12 +116,12 @@ public class DishController {
         //return new ResponseEntity<>(updatedDishReturnDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("{name}")
+    @DeleteMapping("id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<String> deleteDish(
-            @PathVariable("name") String dishName,
-            @AuthenticationPrincipal UserDetails userDetails){
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long dishId){
         return null;
     //    String userName = userDetails.getUsername();
     //    List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);

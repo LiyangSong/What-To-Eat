@@ -38,13 +38,14 @@ public class DishFacadeImpl implements DishFacade {
                 dishDetailsCreateDto.getDishName());
         DishReturnDto dishReturnDto = dishService.create(dishCreateDto);
 
+        // Auto create userDishMapping when creating new dish.
         Long userId = userService.getByName(userName).getId();
         UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
                 userId, dishReturnDto.getId());
         userDishMappingService.create(userDishMappingDto);
 
         List<DishIngredientAmountReturnDto> amountReturnDtos = dishDetailsCreateDto.getIngredientAmountMaps().stream().map(map -> {
-            Long ingredientId = (Long) map.get("ingredientId");
+            Long ingredientId = Integer.toUnsignedLong((int) map.get("ingredientId"));
             double ingredientAmount = (double) map.get("ingredientAmount");
             DishIngredientAmountCreateDto amountDto = new DishIngredientAmountCreateDto(
                     dishReturnDto.getId(), ingredientId, ingredientAmount);
@@ -67,12 +68,11 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public String addDish(Long dishId, String userName) {
+    public UserDishMappingDto addDish(Long dishId, String userName) {
         Long userId = userService.getByName(userName).getId();
         UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
                 userId, dishId);
-        userDishMappingService.create(userDishMappingDto);
-        return "UserDishMapping has been created: UserId: " + userId + ", DishId: " + dishId;
+        return userDishMappingService.create(userDishMappingDto);
     }
 
     @Override
