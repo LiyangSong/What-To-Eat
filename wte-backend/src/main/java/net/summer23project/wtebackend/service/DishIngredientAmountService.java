@@ -9,15 +9,14 @@ import java.util.List;
  * @author Liyang
  */
 public interface DishIngredientAmountService {
-    DishIngredientAmountReturnDto create(DishIngredientAmountCreateDto dishIngredientAmountCreateDto);
+    DishIngredientAmountReturnDto create(
+            DishIngredientAmountCreateDto amountCreateDto);
     List<DishIngredientAmountReturnDto> getByDishId(Long dishId);
-    List<DishIngredientAmountReturnDto> getByDishName(String dishName);
-    DishIngredientAmountCreateDto updateDishIngredientAmount(
-            DishIngredientAmountCreateDto dishIngredientAmountCreateDto,
-            DishIngredientAmountCreateDto updatedDishIngredientAmountCreateDto);
-    void deleteDishIngredientAmount(
-            DishIngredientAmountCreateDto dishIngredientAmountCreateDto);
-    List<DishIngredientAmountCreateDto> updateDishIngredientAmountList(
-            List<DishIngredientAmountCreateDto> dishIngredientAmountCreateDtos,
-            List<DishIngredientAmountCreateDto> updatedDishIngredientAmountCreateDtos);
+    DishIngredientAmountReturnDto update(
+            Long amountId,
+            DishIngredientAmountCreateDto updatedAmountCreateDto);
+    void delete(Long amountId);
+    List<DishIngredientAmountReturnDto> updateList(
+            List<Long>  amountIds,
+            List<DishIngredientAmountCreateDto> updatedAmountCreateDtos);
 }
