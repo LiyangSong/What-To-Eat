@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface UserDishMappingService {
     UserDishMappingDto create(UserDishMappingDto userDishMappingDto);
-    List<UserDishMappingDto> getUserDishMappingDtosByUserName(String userName);
+    List<UserDishMappingDto> getByUserName(String userName);
 }

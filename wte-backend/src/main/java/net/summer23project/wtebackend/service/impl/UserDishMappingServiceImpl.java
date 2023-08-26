@@ -2,7 +2,6 @@ package net.summer23project.wtebackend.service.impl;
 
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.UserDishMappingDto;
-import net.summer23project.wtebackend.dto.UserRegisterDto;
 import net.summer23project.wtebackend.entity.Dish;
 import net.summer23project.wtebackend.entity.User;
 import net.summer23project.wtebackend.entity.UserDishMapping;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Liyang
@@ -52,18 +50,17 @@ public class UserDishMappingServiceImpl implements UserDishMappingService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public List<UserDishMappingDto> getUserDishMappingDtosByUserName(
-            String userName) {
+    public List<UserDishMappingDto> getByUserName(String userName) {
 
         Long userId = userRepository.findByName(userName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "User does not exist with given userName: " + userName))
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
                 .getId();
 
         List<UserDishMapping> userDishMappings = userDishMappingRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "UserDishMapping does not exist with given userId: " + userId));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "UserDishMapping does not exist with given userId: " + userId));
 
         return userDishMappings.stream().map(
                 userDishMappingMapper::mapToUserDishMappingDto
-        ).collect(Collectors.toList());
+        ).toList();
     }
 }
