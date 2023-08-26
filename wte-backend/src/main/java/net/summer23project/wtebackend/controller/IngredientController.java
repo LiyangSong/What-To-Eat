@@ -1,26 +1,9 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.DishReturnDto;
-import net.summer23project.wtebackend.dto.IngredientDetailsDto;
-import net.summer23project.wtebackend.dto.IngredientDto;
-import net.summer23project.wtebackend.dto.IngredientNutrientAmountDto;
-import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.mapper.IngredientDetailsMapper;
-import net.summer23project.wtebackend.service.IngredientNutrientAmountService;
-import net.summer23project.wtebackend.service.IngredientService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**

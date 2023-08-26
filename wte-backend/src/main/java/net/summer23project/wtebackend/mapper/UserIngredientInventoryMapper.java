@@ -11,7 +11,6 @@ import net.summer23project.wtebackend.repository.UserIngredientInventoryReposito
 import net.summer23project.wtebackend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Liyang
