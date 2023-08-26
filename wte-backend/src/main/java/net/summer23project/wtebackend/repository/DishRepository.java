@@ -10,6 +10,6 @@ import java.util.Optional;
  * @author Liyang
  */
 public interface DishRepository extends JpaRepository<Dish, Long> {
-    Optional<List<Dish>> findAllByName(String name);
+    Optional<List<Dish>> findAllByNameContainingIgnoreCase(String name);
     Boolean existsByName(String name);
 }

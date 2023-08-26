@@ -6,11 +6,15 @@ import net.summer23project.wtebackend.dto.UserDishMappingDto;
 
 import java.util.List;
 
+/**
+ * @author Liyang
+ */
 public interface DishFacade {
     DishDetailsReturnDto createDish(DishDetailsCreateDto dishDetailsCreateDto, String userName);
     UserDishMappingDto addDish(Long dishId, String userName);
     DishDetailsReturnDto getDishById(Long dishId);
     List<DishDetailsReturnDto> getDishesByName(String dishName, String userName);
-    void updateDish(Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto);
-    void deleteDish(Long dishId);
+    List<DishDetailsReturnDto> getAllDishes(String userName);
+    DishDetailsReturnDto updateDish(Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto);
+    String deleteDish(Long dishId, String userName);
 }
