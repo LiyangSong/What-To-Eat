@@ -43,7 +43,7 @@ public class UserIngredientInventory {
             return false;
         }
 
-        UserIngredientInventory userIngredientInventory = ( UserIngredientInventory) obj;
+        UserIngredientInventory userIngredientInventory = (UserIngredientInventory) obj;
         if (userIngredientInventory.getUser() == null || this.getUser() == null ||
                 userIngredientInventory.getIngredient() == null || this.getIngredient() == null) {
             return false;

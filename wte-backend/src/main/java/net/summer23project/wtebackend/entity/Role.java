@@ -41,15 +41,15 @@ public class Role {
         }
 
         Role role = (Role) obj;
-        if (role.getName() == null || this.getName() == null) {
+        if (role.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(role.getName(), this.getName());
+        return  Objects.equals(role.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }

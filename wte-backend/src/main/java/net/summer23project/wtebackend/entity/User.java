@@ -61,17 +61,15 @@ public class User {
         }
 
         User user = (User) obj;
-        if (user.getName() == null || this.getName() == null ||
-                user.getEmail() == null || this.getEmail() == null) {
+        if (user.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(user.getName(), this.getName()) &&
-                Objects.equals(user.getEmail(), this.getEmail());
+        return Objects.equals(user.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getName(), this.getEmail());
+        return Objects.hashCode(this.getId());
     }
 }

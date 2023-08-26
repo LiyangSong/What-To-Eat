@@ -44,15 +44,15 @@ public class Unit {
         }
 
         Unit unit = (Unit) obj;
-        if (unit.getName() == null || this.getName() == null) {
+        if (unit.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(unit.getName(), this.getName());
+        return  Objects.equals(unit.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }
