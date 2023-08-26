@@ -44,7 +44,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<DishReturnDto> getByName(String dishName) {
-        List<Dish> dishes = dishRepository.findAllByName(dishName)
+        List<Dish> dishes = dishRepository.findAllByNameContainingIgnoreCase(dishName)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishName: " + dishName));
         return dishes.stream()
                 .map(dishMapper::mapToDishReturnDto)
@@ -62,10 +62,10 @@ public class DishServiceImpl implements DishService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishReturnDto update(Long dishId, String dishName) {
+    public DishReturnDto update(Long dishId, DishCreateDto dishCreateDto) {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
-        dish.setName(dishName);
+        dish.setName(dishCreateDto.getName());
         Dish savedDish = dishRepository.save(dish);
         return dishMapper.mapToDishReturnDto(savedDish);
     }
