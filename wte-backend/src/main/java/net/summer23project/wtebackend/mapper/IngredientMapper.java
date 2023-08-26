@@ -1,15 +1,7 @@
 package net.summer23project.wtebackend.mapper;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.IngredientDto;
-import net.summer23project.wtebackend.entity.Ingredient;
-import net.summer23project.wtebackend.entity.Unit;
-import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.repository.IngredientRepository;
-import net.summer23project.wtebackend.repository.UnitRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Liyang
