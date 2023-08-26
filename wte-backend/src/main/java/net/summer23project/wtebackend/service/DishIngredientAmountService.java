@@ -17,6 +17,6 @@ public interface DishIngredientAmountService {
             DishIngredientAmountCreateDto updatedAmountCreateDto);
     void delete(Long amountId);
     List<DishIngredientAmountReturnDto> updateList(
-            List<Long>  amountIds,
+            Long  dishId,
             List<DishIngredientAmountCreateDto> updatedAmountCreateDtos);
 }

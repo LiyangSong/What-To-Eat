@@ -142,8 +142,37 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishDetailsReturnDto updateDish(Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto) {
-        return null;
+    public DishDetailsReturnDto updateDish(
+            Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto, String userName) {
+
+        List<UserDishMappingDto> mappingDtos = userDishMappingService.getByUserName(userName);
+        Set<Long> mappingDishIds = mappingDtos.stream()
+                .map(UserDishMappingDto::getDishId)
+                .collect(Collectors.toSet());
+
+        if (!mappingDishIds.contains(dishId)) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to update dish with given dishId: " + dishId);
+        }
+
+        DishCreateDto updatedDishCreateDto = new DishCreateDto(
+                updatedDishDetailsCreateDto.getDishName());
+        DishReturnDto dishReturnDto = dishService.update(dishId, updatedDishCreateDto);
+
+        List<DishIngredientAmountCreateDto> updatedAmountCreateDtos = updatedDishDetailsCreateDto.getIngredientAmountMaps()
+                .stream().map(amountMap ->
+                        dishIngredientAmountMapper.mapToDishIngredientAmountCreateDto(
+                                dishId, amountMap)
+                ).toList();
+        List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.updateList(dishId, updatedAmountCreateDtos);
+        List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
+                .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
+                .toList();
+
+        return new DishDetailsReturnDto(
+                dishId,
+                dishReturnDto.getName(),
+                amountReturnMaps
+        );
     }
 
     @Override

@@ -82,6 +82,7 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDtos, HttpStatus.OK);
     }
 
+    // Put http://localhost:8080/api/dishes/id={id}
     @PutMapping("id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -89,28 +90,10 @@ public class DishController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long dishId,
             @RequestBody DishDetailsCreateDto udpatedDishDetailsCreateDto){
-        return null;
-        //String userName = userDetails.getUsername();
-        //List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
-        //DishReturnDto dishReturnDto = dishService.getDishByName(dishName);
-        //
-        //boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
-        //        .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishReturnDto.getName()));
-        //
-        //if (!dishExistsInUserDishMappings) {
-        //    throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
-        //}
-        //
-        //DishReturnDto updatedDishDto = dishDetailsMapper.mapToDishDto(updateDishReturnDto);
-        //dishService.updateDish(dishName, updatedDishDto);
-        //
-        //List<DishIngredientAmountCreateDto> dishIngredientAmountCreateDtos = dishIngredientAmountService.getDishIngredientAmountDtosByDishName(dishName);
-        //List<DishIngredientAmountCreateDto> updatedDishIngredientAmountCreateDtos = dishDetailsMapper.mapToDishIngredientAmountDtos(updateDishReturnDto);
-        //
-        //List<DishIngredientAmountCreateDto> savedUpdatedDtos = dishIngredientAmountService.updateDishIngredientAmountList(dishIngredientAmountCreateDtos, updatedDishIngredientAmountCreateDtos);
-        //DishReturnDto updatedDishReturnDto =  dishDetailsMapper.mapToDishDetailsDto(dishReturnDto, savedUpdatedDtos);
-        //
-        //return new ResponseEntity<>(updatedDishReturnDto, HttpStatus.OK);
+
+        DishDetailsReturnDto dishDetailsReturnDto = dishFacade.updateDish(
+                dishId, udpatedDishDetailsCreateDto, userDetails.getUsername());
+        return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.OK);
     }
 
     // Delete http://localhost:8080/api/dishes/id={id}

@@ -1,22 +1,11 @@
 package net.summer23project.wtebackend.mapper;
 
-import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.DishIngredientAmountCreateDto;
 import net.summer23project.wtebackend.dto.DishIngredientAmountReturnDto;
-import net.summer23project.wtebackend.entity.Dish;
 import net.summer23project.wtebackend.entity.DishIngredientAmount;
-import net.summer23project.wtebackend.entity.Ingredient;
-import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.repository.DishIngredientAmountRepository;
-import net.summer23project.wtebackend.repository.DishRepository;
-import net.summer23project.wtebackend.repository.IngredientRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,10 +29,21 @@ public class DishIngredientAmountMapper {
     public Map<String, Object> mapToDishIngredientAmountMap(
             DishIngredientAmountReturnDto amountReturnDto) {
 
-        Map<String, Object> amountReturnMap = new HashMap<>();
+        Map<String, Object> amountReturnMap = new HashMap<>(0);
         amountReturnMap.put("ingredientId", amountReturnDto.getIngredientId());
         amountReturnMap.put("ingredientName", amountReturnDto.getIngredientName());
         amountReturnMap.put("ingredientAmount", amountReturnDto.getIngredientAmount());
         return amountReturnMap;
+    }
+
+    public DishIngredientAmountCreateDto mapToDishIngredientAmountCreateDto(
+            Long dishId,
+            Map<String, Object> dishIngredientAmountMap) {
+
+        return new DishIngredientAmountCreateDto(
+                dishId,
+                Integer.toUnsignedLong((int) dishIngredientAmountMap.get("ingredientId")),
+                (double) dishIngredientAmountMap.get("ingredientAmount")
+        );
     }
 }

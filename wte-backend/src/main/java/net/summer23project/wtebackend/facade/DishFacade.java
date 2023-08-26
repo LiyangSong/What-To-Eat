@@ -15,6 +15,7 @@ public interface DishFacade {
     DishDetailsReturnDto getDishById(Long dishId);
     List<DishDetailsReturnDto> getDishesByName(String dishName, String userName);
     List<DishDetailsReturnDto> getAllDishes(String userName);
-    DishDetailsReturnDto updateDish(Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto);
+    DishDetailsReturnDto updateDish(
+            Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto, String userName);
     String deleteDish(Long dishId, String userName);
 }
