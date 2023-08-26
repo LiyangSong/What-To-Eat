@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientDto {
+public class IngredientReturnDto {
     private Long id;
     private String name;
     private String unitName;

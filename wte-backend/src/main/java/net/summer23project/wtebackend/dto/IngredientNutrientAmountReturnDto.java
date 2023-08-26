@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Liyang
  */
@@ -15,8 +12,10 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientDetailsDto {
+public class IngredientNutrientAmountReturnDto {
+    private Long ingredientId;
     private String ingredientName;
-    private String unitName;
-    private List<Map<String, Object>> nutrientAmountMaps;
+    private Long nutrientId;
+    private String nutrientName;
+    private double nutrientAmount;
 }

@@ -12,8 +12,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngredientNutrientAmountDto {
+public class UserIngredientInventoryReturnDto {
+    private String userName;
+    private Long ingredientId;
     private String ingredientName;
-    private String nutrientName;
-    private double nutrientAmount;
+    private double ingredientAmount;
 }

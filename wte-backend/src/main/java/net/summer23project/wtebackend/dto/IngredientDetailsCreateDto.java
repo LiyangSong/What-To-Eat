@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Liyang
  */
@@ -12,8 +15,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserIngredientInventoryDto {
-    private String userName;
+public class IngredientDetailsCreateDto {
     private String ingredientName;
-    private double ingredientAmount;
+    private String unitName;
+
+    // Map format: {nutrientId: x, nutrientAmount: x}
+    private List<Map<String, Object>> nutrientAmountMaps;
 }

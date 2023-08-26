@@ -12,7 +12,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NutrientDto {
-    private String name;
-    private String unitName;
+public class IngredientNutrientAmountCreateDto {
+    private Long ingredientId;
+    private Long nutrientId;
+    private double nutrientAmount;
 }
