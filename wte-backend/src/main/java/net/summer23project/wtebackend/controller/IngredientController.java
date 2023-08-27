@@ -1,47 +1,68 @@
 package net.summer23project.wtebackend.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import net.summer23project.wtebackend.dto.IngredientDetailsCreateDto;
+import net.summer23project.wtebackend.dto.IngredientDetailsReturnDto;
+import net.summer23project.wtebackend.dto.UserIngredientInventoryReturnDto;
+import net.summer23project.wtebackend.exception.ApiException;
+import net.summer23project.wtebackend.facade.IngredientFacade;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
- * @author Yue
+ * @author Liyang
  */
 @RestController
 @RequestMapping("/api/ingredients")
 @CrossOrigin("*")
 @AllArgsConstructor
 public class IngredientController {
-    //private final IngredientService ingredientService;
-    //private final IngredientNutrientAmountService ingredientNutrientAmountService;
-    //private final IngredientDetailsMapper ingredientDetailsMapper;
-    //
-    //// Post http://localhost:8080/api/ingredients
-    //@PostMapping
-    //@Transactional(rollbackFor = ApiException.class)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    //public ResponseEntity<IngredientDetailsDto> createIngredient(
-    //        @RequestBody IngredientDetailsDto ingredientDetailsDto) {
-    //
-    //    IngredientDto ingredientDto = ingredientDetailsMapper.mapToIngredientDto(ingredientDetailsDto);
-    //    IngredientDto savedIngredientDto = ingredientService.createIngredient(ingredientDto);
-    //
-    //    List<IngredientNutrientAmountDto> ingredientNutrientAmountDtos = ingredientDetailsMapper.mapToIngredientNutrientAmountDtos(ingredientDetailsDto);
-    //    List<IngredientNutrientAmountDto> savedIngredientNutrientAmountDtos = new ArrayList<>();
-    //    for (IngredientNutrientAmountDto ingredientNutrientAmountDto : ingredientNutrientAmountDtos) {
-    //        IngredientNutrientAmountDto savedIngredientNutrientAmountDto = ingredientNutrientAmountService.createIngredientNutrientAmount(ingredientNutrientAmountDto);
-    //        savedIngredientNutrientAmountDtos.add(savedIngredientNutrientAmountDto);
-    //    }
-    //
-    //    IngredientDetailsDto savedIngredientDetailsDto = ingredientDetailsMapper.mapToIngredientDetailsDto(
-    //            savedIngredientDto, savedIngredientNutrientAmountDtos
-    //    );
-    //
-    //    return new ResponseEntity<>(savedIngredientDetailsDto, HttpStatus.CREATED);
-    //}
-    //
+    private final IngredientFacade ingredientFacade;
+
+    // Post http://localhost:8080/api/ingredients/create
+    @PostMapping("create")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<IngredientDetailsReturnDto> createIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody IngredientDetailsCreateDto ingredientDetailsCreateDto) {
+
+        IngredientDetailsReturnDto ingredientDetailsReturnDto = ingredientFacade.createIngredient(
+                ingredientDetailsCreateDto, userDetails.getUsername());
+        return new ResponseEntity<>(ingredientDetailsReturnDto, HttpStatus.CREATED);
+    }
+
+    // Post http://localhost:8080/api/ingredients/add/id={id}
+    @PostMapping("add/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserIngredientInventoryReturnDto> addIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId) {
+
+        UserIngredientInventoryReturnDto inventoryReturnDto = ingredientFacade.addIngredient(
+                ingredientId, userDetails.getUsername());
+        return new ResponseEntity<>(inventoryReturnDto, HttpStatus.CREATED);
+    }
+
+    // Delete http://localhost:8080/api/ingredients/remove/id={id}
+    @DeleteMapping("remove/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> removeIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId) {
+
+        String response = ingredientFacade.removeIngredient(ingredientId, userDetails.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     //@GetMapping("{name}")
     //@Transactional(rollbackFor = ApiException.class)
     //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -75,14 +96,16 @@ public class IngredientController {
     //
     //    return null;
     //}
-    //
-    //@DeleteMapping("{name}")
-    //@Transactional(rollbackFor = ApiException.class)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    //public ResponseEntity<String> deleteIngredient(
-    //        @PathVariable("name") String ingredientName){
-    //
-    //    ingredientService.deleteIngredient(ingredientName);
-    //    return new ResponseEntity<>("Delete ingredient " + ingredientName + " successfully", HttpStatus.NO_CONTENT);
-    //}
+
+    // Delete http://localhost:8080/api/ingredients/delete/id={id}
+    @DeleteMapping("delete/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> deleteIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId){
+
+        String response = ingredientFacade.deleteIngredient(ingredientId, userDetails.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

@@ -15,5 +15,5 @@ import lombok.Setter;
 public class UserIngredientInventoryCreateDto {
     private String userName;
     private Long ingredientId;
-    private double ingredientAmount;
+    private double ingredientInventory = 0.0;
 }

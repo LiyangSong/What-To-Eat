@@ -23,8 +23,8 @@ public class UserIngredientInventory {
     @Column(name = "user_ingredient_inventory_id")
     private Long id;
 
-    @Column(name = "ingredient_amount", nullable = false)
-    private double ingredientAmount;
+    @Column(name = "ingredient_inventory", nullable = false)
+    private double ingredientInventory;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

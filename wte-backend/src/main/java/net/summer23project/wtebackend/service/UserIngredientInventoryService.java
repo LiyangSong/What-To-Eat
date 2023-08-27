@@ -12,6 +12,8 @@ public interface UserIngredientInventoryService {
     UserIngredientInventoryReturnDto create(
             UserIngredientInventoryCreateDto inventoryCreateDto);
     List<UserIngredientInventoryReturnDto> getByUserName(String userName);
+    UserIngredientInventoryReturnDto getByUserNameAndIngredientId(
+            String userName, Long ingredientId);
     UserIngredientInventoryReturnDto update(
             Long inventoryId,
             UserIngredientInventoryCreateDto updatedInventoryCreateDto);

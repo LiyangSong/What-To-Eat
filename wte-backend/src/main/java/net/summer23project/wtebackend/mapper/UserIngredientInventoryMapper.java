@@ -16,10 +16,11 @@ public class UserIngredientInventoryMapper {
             UserIngredientInventory userIngredientInventory) {
 
         return new UserIngredientInventoryReturnDto(
+                userIngredientInventory.getId(),
                 userIngredientInventory.getUser().getName(),
                 userIngredientInventory.getIngredient().getId(),
                 userIngredientInventory.getIngredient().getName(),
-                userIngredientInventory.getIngredientAmount()
+                userIngredientInventory.getIngredientInventory()
         );
     }
 }
