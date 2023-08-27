@@ -46,9 +46,9 @@ public class DishFacadeImpl implements DishFacade {
 
         // Create new dishIngredientAmounts
         List<DishIngredientAmountReturnDto> amountReturnDtos = dishDetailsCreateDto.getIngredientAmountMaps()
-                .stream().map(map -> {
+                .stream().map(amountMap -> {
                     DishIngredientAmountCreateDto amountDto = dishIngredientAmountMapper.mapToDishIngredientAmountCreateDto(
-                    dishReturnDto.getId(), map);
+                            dishReturnDto.getId(), amountMap);
                     return dishIngredientAmountService.create(amountDto);
                 }).toList();
 
@@ -56,8 +56,8 @@ public class DishFacadeImpl implements DishFacade {
         List<Map<String, Object>> amountReturnMaps = new ArrayList<>();
         for (DishIngredientAmountReturnDto amountReturnDto : amountReturnDtos) {
             amountReturnMaps.add(
-                    dishIngredientAmountMapper.mapToDishIngredientAmountMap(
-                            amountReturnDto));
+                    dishIngredientAmountMapper.mapToDishIngredientAmountMap(amountReturnDto)
+            );
         }
 
         return new DishDetailsReturnDto(
