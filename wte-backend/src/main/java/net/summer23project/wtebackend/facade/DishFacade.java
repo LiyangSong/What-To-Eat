@@ -12,6 +12,7 @@ import java.util.List;
 public interface DishFacade {
     DishDetailsReturnDto createDish(DishDetailsCreateDto dishDetailsCreateDto, String userName);
     UserDishMappingDto addDish(Long dishId, String userName);
+    String removeDish(Long dishId, String userName);
     DishDetailsReturnDto getDishById(Long dishId);
     List<DishDetailsReturnDto> getDishesByName(String dishName, String userName);
     List<DishDetailsReturnDto> getAllDishes(String userName);

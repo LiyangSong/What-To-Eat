@@ -63,4 +63,26 @@ public class UserDishMappingServiceImpl implements UserDishMappingService {
                 userDishMappingMapper::mapToUserDishMappingDto
         ).toList();
     }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public void delete(UserDishMappingDto userDishMappingDto) {
+        Long userId = userDishMappingDto.getUserId();
+        Long dishId = userDishMappingDto.getDishId();
+
+        UserDishMapping userDishMapping = userDishMappingRepository.findByUserIdAndDishId(userId, dishId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "UserDishMapping does not exist with given userId: " + userId + " and dishId: " + dishId));
+        userDishMappingRepository.delete(userDishMapping);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public boolean exists(String userName, Long dishId) {
+        Long userId = userRepository.findByName(userName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
+                .getId();
+        return userDishMappingRepository.existsByUserIdAndDishId(
+            userId, dishId
+        );
+    }
 }

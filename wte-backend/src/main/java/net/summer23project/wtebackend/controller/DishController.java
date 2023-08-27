@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author Yue, Liyang
+ * @author Liyang
  */
 @RestController
 @RequestMapping("/api/dishes")
@@ -44,12 +44,25 @@ public class DishController {
     public ResponseEntity<UserDishMappingDto> addDish(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long dishId) {
+
         UserDishMappingDto userDishMappingDto = dishFacade.addDish(dishId, userDetails.getUsername());
         return new ResponseEntity<>(userDishMappingDto, HttpStatus.CREATED);
     }
 
-    // Get http://localhost:8080/api/dishes/id={id}
-    @GetMapping("id={id}")
+    // Delete http://localhost:8080/api/dishes/remove/id={id}
+    @DeleteMapping("remove/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> removeDish(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long dishId) {
+
+        String response = dishFacade.removeDish(dishId, userDetails.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Get http://localhost:8080/api/dishes/get/id={id}
+    @GetMapping("get/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsReturnDto> getDishById(
@@ -59,8 +72,8 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.OK);
     }
 
-    // Get http://localhost:8080/api/dishes/name={name}
-    @GetMapping("name={name}")
+    // Get http://localhost:8080/api/dishes/get/name={name}
+    @GetMapping("get/name={name}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<DishDetailsReturnDto>> getDishesByName(
@@ -71,8 +84,8 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDtos, HttpStatus.OK);
     }
 
-    // Get http://localhost:8080/api/dishes
-    @GetMapping
+    // Get http://localhost:8080/api/dishes/getAll
+    @GetMapping("getAll")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<DishDetailsReturnDto>> getAllDishes(
@@ -82,8 +95,8 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDtos, HttpStatus.OK);
     }
 
-    // Put http://localhost:8080/api/dishes/id={id}
-    @PutMapping("id={id}")
+    // Put http://localhost:8080/api/dishes/update/id={id}
+    @PutMapping("update/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<DishDetailsReturnDto> updateDish(
@@ -96,8 +109,8 @@ public class DishController {
         return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.OK);
     }
 
-    // Delete http://localhost:8080/api/dishes/id={id}
-    @DeleteMapping("id={id}")
+    // Delete http://localhost:8080/api/dishes/delete/id={id}
+    @DeleteMapping("delete/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<String> deleteDish(

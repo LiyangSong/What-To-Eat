@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserDishMappingService {
     UserDishMappingDto create(UserDishMappingDto userDishMappingDto);
     List<UserDishMappingDto> getByUserName(String userName);
+    void delete(UserDishMappingDto userDishMappingDto);
+    boolean exists(String userName, Long dishId);
 }

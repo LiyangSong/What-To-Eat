@@ -33,6 +33,7 @@ public class DishFacadeImpl implements DishFacade {
     public DishDetailsReturnDto createDish(
             DishDetailsCreateDto dishDetailsCreateDto, String userName) {
 
+        // Create new dish
         DishCreateDto dishCreateDto = new DishCreateDto(
                 dishDetailsCreateDto.getDishName());
         DishReturnDto dishReturnDto = dishService.create(dishCreateDto);
@@ -43,14 +44,15 @@ public class DishFacadeImpl implements DishFacade {
                 userId, dishReturnDto.getId());
         userDishMappingService.create(userDishMappingDto);
 
-        List<DishIngredientAmountReturnDto> amountReturnDtos = dishDetailsCreateDto.getIngredientAmountMaps().stream().map(map -> {
-            Long ingredientId = Integer.toUnsignedLong((int) map.get("ingredientId"));
-            double ingredientAmount = (double) map.get("ingredientAmount");
-            DishIngredientAmountCreateDto amountDto = new DishIngredientAmountCreateDto(
-                    dishReturnDto.getId(), ingredientId, ingredientAmount);
-            return dishIngredientAmountService.create(amountDto);
-        }).toList();
+        // Create new dishIngredientAmounts
+        List<DishIngredientAmountReturnDto> amountReturnDtos = dishDetailsCreateDto.getIngredientAmountMaps()
+                .stream().map(map -> {
+                    DishIngredientAmountCreateDto amountDto = dishIngredientAmountMapper.mapToDishIngredientAmountCreateDto(
+                    dishReturnDto.getId(), map);
+                    return dishIngredientAmountService.create(amountDto);
+                }).toList();
 
+        // Get created dishDetails
         List<Map<String, Object>> amountReturnMaps = new ArrayList<>();
         for (DishIngredientAmountReturnDto amountReturnDto : amountReturnDtos) {
             amountReturnMaps.add(
@@ -72,6 +74,20 @@ public class DishFacadeImpl implements DishFacade {
         UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
                 userId, dishId);
         return userDishMappingService.create(userDishMappingDto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public String removeDish(Long dishId, String userName) {
+        if (!userDishMappingService.exists(userName, dishId)) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "UserDishMapping does not exists with given dishId: " + dishId);
+        }
+
+        userDishMappingService.delete(new UserDishMappingDto(
+                userService.getByName(userName).getId(),
+                dishId
+        ));
+        return "Delete userDishMapping successfully with dishId: " + dishId;
     }
 
     @Override
@@ -145,12 +161,7 @@ public class DishFacadeImpl implements DishFacade {
     public DishDetailsReturnDto updateDish(
             Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto, String userName) {
 
-        List<UserDishMappingDto> mappingDtos = userDishMappingService.getByUserName(userName);
-        Set<Long> mappingDishIds = mappingDtos.stream()
-                .map(UserDishMappingDto::getDishId)
-                .collect(Collectors.toSet());
-
-        if (!mappingDishIds.contains(dishId)) {
+        if (!userDishMappingService.exists(userName, dishId)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to update dish with given dishId: " + dishId);
         }
 
@@ -178,12 +189,7 @@ public class DishFacadeImpl implements DishFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public String deleteDish(Long dishId, String userName) {
-        List<UserDishMappingDto> mappingDtos = userDishMappingService.getByUserName(userName);
-        Set<Long> mappingDishIds = mappingDtos.stream()
-                .map(UserDishMappingDto::getDishId)
-                .collect(Collectors.toSet());
-
-        if (!mappingDishIds.contains(dishId)) {
+        if (!userDishMappingService.exists(userName, dishId)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to delete dish with given dishId: " + dishId);
         }
 

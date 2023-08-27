@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface UserDishMappingRepository extends JpaRepository<UserDishMapping, Long> {
     Optional<List<UserDishMapping>> findByUserId(Long userId);
     Optional<UserDishMapping> findByUserIdAndDishId(Long userId, Long dishId);
+    boolean existsByUserIdAndDishId(Long userId, Long dishId);
 }
