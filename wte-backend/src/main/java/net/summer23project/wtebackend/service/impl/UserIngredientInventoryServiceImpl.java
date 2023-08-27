@@ -88,4 +88,14 @@ public class UserIngredientInventoryServiceImpl implements UserIngredientInvento
     public List<UserIngredientInventoryReturnDto> updateList(String userName, List<UserIngredientInventoryCreateDto> updatedInventoryCreateDtos) {
         return null;
     }
+
+    @Override
+    public boolean exist(String userName, Long ingredientId) {
+        Long userId = userRepository.findByName(userName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
+                .getId();
+        return userIngredientInventoryRepository.existsByUserIdAndIngredientId(
+                userId, ingredientId
+        );
+    }
 }

@@ -8,7 +8,7 @@ import net.summer23project.wtebackend.mapper.IngredientNutrientAmountMapper;
 import net.summer23project.wtebackend.service.IngredientNutrientAmountService;
 import net.summer23project.wtebackend.service.IngredientService;
 import net.summer23project.wtebackend.service.UserIngredientInventoryService;
-import net.summer23project.wtebackend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +25,6 @@ public class IngredientFacadeImpl implements IngredientFacade {
     private final IngredientService ingredientService;
     private final UserIngredientInventoryService userIngredientInventoryService;
     private final IngredientNutrientAmountService ingredientNutrientAmountService;
-    private final UserService userService;
     private final IngredientNutrientAmountMapper ingredientNutrientAmountMapper;
 
     @Override
@@ -116,6 +115,11 @@ public class IngredientFacadeImpl implements IngredientFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public String deleteIngredient(Long ingredientId, String userName) {
-        return null;
+        if (!userIngredientInventoryService.exist(userName, ingredientId)) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to delete ingredient with given ingredientId: " + ingredientId);
+        }
+
+        ingredientService.delete(ingredientId);
+        return "Delete ingredient successfully with ingredientId: " + ingredientId;
     }
 }

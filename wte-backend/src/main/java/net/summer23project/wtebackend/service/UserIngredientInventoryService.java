@@ -21,4 +21,5 @@ public interface UserIngredientInventoryService {
     List<UserIngredientInventoryReturnDto> updateList(
             String userName,
             List<UserIngredientInventoryCreateDto> updatedInventoryCreateDtos);
+    boolean exist(String userName, Long ingredientId);
 }
