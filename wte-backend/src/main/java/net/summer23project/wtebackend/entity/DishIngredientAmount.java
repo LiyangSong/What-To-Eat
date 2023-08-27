@@ -27,11 +27,25 @@ public class DishIngredientAmount {
     private double ingredientAmount;
 
     @ManyToOne
-    @JoinColumn(name = "dish_id")
+    @JoinColumn(
+            name = "dish_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_dishIngredientAmount_dish",
+                    foreignKeyDefinition = "FOREIGN KEY (dish_id) REFERENCES dishes(dish_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private Dish dish;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(
+            name = "ingredient_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_dishIngredientAmount_ingredient",
+                    foreignKeyDefinition = "FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private Ingredient ingredient;
 
     @Override

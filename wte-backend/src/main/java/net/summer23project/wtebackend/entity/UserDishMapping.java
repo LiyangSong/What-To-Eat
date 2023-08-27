@@ -24,11 +24,25 @@ public class UserDishMapping {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_userDishMapping_user",
+                    foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "dish_id")
+    @JoinColumn(
+            name = "dish_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_userDishMapping_dish",
+                    foreignKeyDefinition = "FOREIGN KEY (dish_id) REFERENCES dishes(dish_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private Dish dish;
 
     @Override
