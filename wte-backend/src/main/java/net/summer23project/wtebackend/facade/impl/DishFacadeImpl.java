@@ -79,7 +79,7 @@ public class DishFacadeImpl implements DishFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public String removeDish(Long dishId, String userName) {
-        if (!userDishMappingService.exists(userName, dishId)) {
+        if (!userDishMappingService.exist(userName, dishId)) {
             throw new ApiException(HttpStatus.NOT_FOUND, "UserDishMapping does not exists with given dishId: " + dishId);
         }
 
@@ -161,7 +161,7 @@ public class DishFacadeImpl implements DishFacade {
     public DishDetailsReturnDto updateDish(
             Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto, String userName) {
 
-        if (!userDishMappingService.exists(userName, dishId)) {
+        if (!userDishMappingService.exist(userName, dishId)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to update dish with given dishId: " + dishId);
         }
 
@@ -189,7 +189,7 @@ public class DishFacadeImpl implements DishFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public String deleteDish(Long dishId, String userName) {
-        if (!userDishMappingService.exists(userName, dishId)) {
+        if (!userDishMappingService.exist(userName, dishId)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to delete dish with given dishId: " + dishId);
         }
 

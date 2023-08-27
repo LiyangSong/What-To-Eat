@@ -77,7 +77,7 @@ public class UserDishMappingServiceImpl implements UserDishMappingService {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public boolean exists(String userName, Long dishId) {
+    public boolean exist(String userName, Long dishId) {
         Long userId = userRepository.findByName(userName)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
                 .getId();
