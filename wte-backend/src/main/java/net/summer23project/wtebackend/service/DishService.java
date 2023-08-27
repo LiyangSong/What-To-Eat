@@ -1,6 +1,7 @@
 package net.summer23project.wtebackend.service;
 
-import net.summer23project.wtebackend.dto.DishDto;
+import net.summer23project.wtebackend.dto.DishCreateDto;
+import net.summer23project.wtebackend.dto.DishReturnDto;
 
 import java.util.List;
 
@@ -8,10 +9,11 @@ import java.util.List;
  * @author Yue, Liyang
  */
 public interface DishService {
-    DishDto createDish(DishDto dishDto);
-    DishDto getDishByName(String dishName);
-    List<DishDto> getAllDishes();
-    void updateDish(String dishName, DishDto updatedDish);
-    void deleteDish(String dishName);
+    DishReturnDto create(DishCreateDto dishCreateDto);
+    DishReturnDto getById(Long dishId);
+    List<DishReturnDto> getByName(String dishName);
+    List<DishReturnDto> getAll();
+    DishReturnDto update(Long dishId, DishCreateDto dishCreateDto);
+    void delete(Long dishId);
 
 }

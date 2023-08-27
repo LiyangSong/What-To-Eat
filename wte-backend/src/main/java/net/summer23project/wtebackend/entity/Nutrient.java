@@ -45,15 +45,15 @@ public class Nutrient {
         }
 
         Nutrient nutrient = (Nutrient) obj;
-        if (nutrient.getName() == null || this.getName() == null) {
+        if (nutrient.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(nutrient.getName(), this.getName());
+        return  Objects.equals(nutrient.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }

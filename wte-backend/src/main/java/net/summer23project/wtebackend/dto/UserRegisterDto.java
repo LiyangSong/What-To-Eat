@@ -12,8 +12,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserIngredientInventoryDto {
-    private String userName;
-    private String ingredientName;
-    private int ingredientAmount;
+public class UserRegisterDto {
+    private String name;
+    private String password;
+    private String email;
+    private Integer age;
+    private String genderName;
+    private String roleName = "ROLE_USER";
 }

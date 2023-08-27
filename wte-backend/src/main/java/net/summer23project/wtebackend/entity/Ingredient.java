@@ -25,7 +25,7 @@ public class Ingredient {
     @Column(name = "ingredient_id")
     private Long id;
 
-    @Column(name = "ingredient_name", nullable = false, unique = true)
+    @Column(name = "ingredient_name", nullable = false)
     private String name;
 
     @ManyToOne
@@ -51,15 +51,15 @@ public class Ingredient {
         }
 
         Ingredient ingredient = (Ingredient) obj;
-        if (ingredient.getName() == null || this.getName() == null) {
+        if (ingredient.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(ingredient.getName(), this.getName());
+        return  Objects.equals(ingredient.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }

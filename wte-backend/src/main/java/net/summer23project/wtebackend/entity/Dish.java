@@ -25,7 +25,7 @@ public class Dish {
     @Column(name = "dish_id")
     private Long id;
 
-    @Column(name = "dish_name", nullable = false, unique = true)
+    @Column(name = "dish_name", nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "dish", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
@@ -44,15 +44,15 @@ public class Dish {
         }
 
         Dish dish = (Dish) obj;
-        if (dish.getName() == null || this.getName() == null) {
+        if (dish.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(dish.getName(), this.getName());
+        return  Objects.equals(dish.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }

@@ -41,11 +41,12 @@ public class User {
     @JoinColumn(name = "gender_id")
     private Gender gender;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserDishMapping> userDishMappings = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private Set<UserRoleMapping> userRoleMappings = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<UserIngredientInventory> userIngredientInventories = new HashSet<>();
@@ -60,17 +61,15 @@ public class User {
         }
 
         User user = (User) obj;
-        if (user.getName() == null || this.getName() == null ||
-                user.getEmail() == null || this.getEmail() == null) {
+        if (user.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(user.getName(), this.getName()) &&
-                Objects.equals(user.getEmail(), this.getEmail());
+        return Objects.equals(user.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getName(), this.getEmail());
+        return Objects.hashCode(this.getId());
     }
 }

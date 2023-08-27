@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDishMappingDto {
-    private Long userId;
-    private Long dishId;
+public class IngredientCreateDto {
+    private String name;
+    private String unitName;
 }

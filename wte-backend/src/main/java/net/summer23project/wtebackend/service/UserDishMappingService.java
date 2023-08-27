@@ -8,6 +8,8 @@ import java.util.List;
  * @author Liyang
  */
 public interface UserDishMappingService {
-    UserDishMappingDto createUserDishMapping(UserDishMappingDto userDishMappingDto);
-    List<UserDishMappingDto> getUserDishMappingDtosByUserName(String userName);
+    UserDishMappingDto create(UserDishMappingDto userDishMappingDto);
+    List<UserDishMappingDto> getByUserName(String userName);
+    void delete(UserDishMappingDto userDishMappingDto);
+    boolean exists(String userName, Long dishId);
 }

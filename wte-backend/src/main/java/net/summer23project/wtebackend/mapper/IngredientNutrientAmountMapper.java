@@ -1,59 +1,51 @@
 package net.summer23project.wtebackend.mapper;
 
 import lombok.AllArgsConstructor;
-import net.summer23project.wtebackend.dto.IngredientNutrientAmountDto;
-import net.summer23project.wtebackend.entity.Ingredient;
+import net.summer23project.wtebackend.dto.IngredientNutrientAmountCreateDto;
+import net.summer23project.wtebackend.dto.IngredientNutrientAmountReturnDto;
 import net.summer23project.wtebackend.entity.IngredientNutrientAmount;
-import net.summer23project.wtebackend.entity.Nutrient;
-import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.repository.IngredientNutrientAmountRepository;
-import net.summer23project.wtebackend.repository.IngredientRepository;
-import net.summer23project.wtebackend.repository.NutrientRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Liyang
  */
-@Service
+@Component
 @AllArgsConstructor
 public class IngredientNutrientAmountMapper {
-    private final IngredientRepository ingredientRepository;
-    private final NutrientRepository nutrientRepository;
-    private final IngredientNutrientAmountRepository ingredientNutrientAmountRepository;
-
-    public IngredientNutrientAmountDto mapToIngredientNutrientAmountDto(
+    
+    public IngredientNutrientAmountReturnDto mapToIngredientNutrientAmountReturnDto(
             IngredientNutrientAmount ingredientNutrientAmount) {
 
-        return new IngredientNutrientAmountDto(
+        return new IngredientNutrientAmountReturnDto(
+                ingredientNutrientAmount.getIngredient().getId(),
                 ingredientNutrientAmount.getIngredient().getName(),
+                ingredientNutrientAmount.getNutrient().getId(),
                 ingredientNutrientAmount.getNutrient().getName(),
                 ingredientNutrientAmount.getNutrientAmount()
         );
     }
 
-    public IngredientNutrientAmount mapToIngredientNutrientAmount(
-            IngredientNutrientAmountDto ingredientNutrientAmountDto) {
+    public Map<String, Object> mapToIngredientNutrientAmountMap(
+            IngredientNutrientAmountReturnDto amountReturnDto) {
 
-        String ingredientName = ingredientNutrientAmountDto.getIngredientName();
-        Ingredient ingredient = ingredientRepository.findByName(ingredientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
-        Long ingredientId = ingredient.getId();
+        Map<String, Object> amountReturnMap = new HashMap<>(0);
+        amountReturnMap.put("nutrientId", amountReturnDto.getNutrientId());
+        amountReturnMap.put("nutrientName", amountReturnDto.getNutrientName());
+        amountReturnMap.put("nutrientAmount", amountReturnDto.getNutrientAmount());
+        return amountReturnMap;
+    }
 
-        String nutrientName = ingredientNutrientAmountDto.getNutrientName();
-        Nutrient nutrient = nutrientRepository.findByName(nutrientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Nutrient does not exist with given nutrientName: " + nutrientName));
-        Long nutrientId = nutrient.getId();
+    public IngredientNutrientAmountCreateDto mapToIngredientNutrientAmountCreateDto(
+            Long ingredientId,
+            Map<String, Object> ingredientNutrientAmountMap) {
 
-        if (ingredientNutrientAmountRepository.existsByIngredientIdAndNutrientId(ingredientId, nutrientId)) {
-            throw new ApiException(HttpStatus.CONFLICT, "IngredientIngredientAmount already exists with given ingredientName: " + ingredientName + " and nutrientName: " + nutrientName);
-        }
-        
-        IngredientNutrientAmount ingredientNutrientAmount = new IngredientNutrientAmount();
-        ingredientNutrientAmount.setIngredient(ingredient);
-        ingredientNutrientAmount.setNutrient(nutrient);
-        ingredientNutrientAmount.setNutrientAmount(ingredientNutrientAmountDto.getNutrientAmount());
-
-        return ingredientNutrientAmount;
+        return new IngredientNutrientAmountCreateDto(
+                ingredientId,
+                Integer.toUnsignedLong((int) ingredientNutrientAmountMap.get("nutrientId")),
+                (double) ingredientNutrientAmountMap.get("nutrientAmount")
+        );
     }
 }

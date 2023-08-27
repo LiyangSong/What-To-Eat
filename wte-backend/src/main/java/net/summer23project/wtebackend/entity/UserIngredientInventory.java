@@ -23,8 +23,8 @@ public class UserIngredientInventory {
     @Column(name = "user_ingredient_inventory_id")
     private Long id;
 
-    @Column(name = "ingredient_amount", nullable = false)
-    private int ingredientAmount;
+    @Column(name = "ingredient_inventory", nullable = false)
+    private double ingredientInventory;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -43,7 +43,7 @@ public class UserIngredientInventory {
             return false;
         }
 
-        UserIngredientInventory userIngredientInventory = ( UserIngredientInventory) obj;
+        UserIngredientInventory userIngredientInventory = (UserIngredientInventory) obj;
         if (userIngredientInventory.getUser() == null || this.getUser() == null ||
                 userIngredientInventory.getIngredient() == null || this.getIngredient() == null) {
             return false;

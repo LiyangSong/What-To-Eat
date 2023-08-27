@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Liyang
@@ -26,9 +26,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByNameOrEmail(nameOrEmail, nameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not exists by Username or Email"));
 
-        Set<GrantedAuthority> authorities = user.getUserRoleMappings().stream()
-                .map(userRoleMapping -> new SimpleGrantedAuthority(userRoleMapping.getRole().getName()))
-                .collect(Collectors.toSet());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(authority);
 
         return new org.springframework.security.core.userdetails.User(
                 nameOrEmail,

@@ -24,7 +24,7 @@ public class IngredientNutrientAmount {
     private Long id;
 
     @Column(name = "nutrient_amount", nullable = false)
-    private int nutrientAmount;
+    private double nutrientAmount;
 
     @ManyToOne
     @JoinColumn(name = "ingredient_id")

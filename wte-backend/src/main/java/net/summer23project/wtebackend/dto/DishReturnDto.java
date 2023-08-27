@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleDto {
+public class DishReturnDto {
+    private Long id;
     private String name;
 }

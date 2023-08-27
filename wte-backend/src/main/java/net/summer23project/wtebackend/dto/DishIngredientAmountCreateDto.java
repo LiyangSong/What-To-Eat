@@ -12,7 +12,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
-    private String nameOrEmail;
-    private String password;
+public class DishIngredientAmountCreateDto {
+    private Long dishId;
+    private Long ingredientId;
+    private double ingredientAmount;
 }

@@ -12,6 +12,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishDto {
-    private String name;
+public class DishIngredientAmountReturnDto {
+    private Long dishId;
+    private String dishName;
+    private Long ingredientId;
+    private String ingredientName;
+    private double ingredientAmount;
 }

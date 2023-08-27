@@ -3,11 +3,7 @@ package net.summer23project.wtebackend.controller;
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.*;
 import net.summer23project.wtebackend.exception.ApiException;
-import net.summer23project.wtebackend.mapper.DishDetailsMapper;
-import net.summer23project.wtebackend.mapper.DishMapper;
-import net.summer23project.wtebackend.service.DishIngredientAmountService;
-import net.summer23project.wtebackend.service.DishService;
-import net.summer23project.wtebackend.service.UserDishMappingService;
+import net.summer23project.wtebackend.facade.DishFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,125 +12,112 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * @author Yue, Liyang
+ * @author Liyang
  */
 @RestController
 @RequestMapping("/api/dishes")
 @CrossOrigin("*")
 @AllArgsConstructor
 public class DishController {
-    private final DishService dishService;
-    private final UserDishMappingService userDishMappingService;
-    private final DishIngredientAmountService dishIngredientAmountService;
-    private final DishDetailsMapper dishDetailsMapper;
+    private final DishFacade dishFacade;
 
-    // Post http://localhost:8080/api/dishes
-    @PostMapping
+    // Post http://localhost:8080/api/dishes/create
+    @PostMapping("create")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<DishDetailsDto> createDish(
+    public ResponseEntity<DishDetailsReturnDto> createDish(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody DishDetailsDto dishDetailsDto) {
+            @RequestBody DishDetailsCreateDto dishDetailsCreateDto) {
 
-        DishDto dishDto = dishDetailsMapper.mapToDishDto(dishDetailsDto);
-        DishDto savedDishDto = dishService.createDish(dishDto);
-
-        String userName = userDetails.getUsername();
-
-        UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
-                userName, dishDto.getName()
-        );
-        userDishMappingService.createUserDishMapping(userDishMappingDto);
-
-        List<DishIngredientAmountDto> dishIngredientAmountDtos = dishDetailsMapper.mapToDishIngredientAmountDtos(dishDetailsDto);
-        List<DishIngredientAmountDto> savedDishIngredientAmountDtos = new ArrayList<>();
-        for (DishIngredientAmountDto dishIngredientAmountDto : dishIngredientAmountDtos) {
-            DishIngredientAmountDto savedDishIngredientAmountDto = dishIngredientAmountService.createDishIngredientAmount(dishIngredientAmountDto);
-            savedDishIngredientAmountDtos.add(savedDishIngredientAmountDto);
-        }
-
-        DishDetailsDto savedDishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(
-                savedDishDto, savedDishIngredientAmountDtos
-        );
-
-        return new ResponseEntity<>(savedDishDetailsDto, HttpStatus.CREATED);
+        DishDetailsReturnDto dishDetailsReturnDto = dishFacade.createDish(
+                dishDetailsCreateDto, userDetails.getUsername());
+        return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.CREATED);
     }
 
-    // Get http://localhost:8080/api/dishes/{name}
-    @GetMapping("{name}")
+    // Post http://localhost:8080/api/dishes/add/id={id}
+    @PostMapping("add/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<DishDetailsDto> getDishByName(
+    public ResponseEntity<UserDishMappingDto> addDish(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long dishId) {
+
+        UserDishMappingDto userDishMappingDto = dishFacade.addDish(dishId, userDetails.getUsername());
+        return new ResponseEntity<>(userDishMappingDto, HttpStatus.CREATED);
+    }
+
+    // Delete http://localhost:8080/api/dishes/remove/id={id}
+    @DeleteMapping("remove/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> removeDish(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long dishId) {
+
+        String response = dishFacade.removeDish(dishId, userDetails.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Get http://localhost:8080/api/dishes/get/id={id}
+    @GetMapping("get/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<DishDetailsReturnDto> getDishById(
+            @PathVariable("id") Long dishId){
+
+        DishDetailsReturnDto dishDetailsReturnDto = dishFacade.getDishById(dishId);
+        return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.OK);
+    }
+
+    // Get http://localhost:8080/api/dishes/get/name={name}
+    @GetMapping("get/name={name}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<DishDetailsReturnDto>> getDishesByName(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("name") String dishName){
 
-        String userName = userDetails.getUsername();
-        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
-
-        DishDto dishDto = dishService.getDishByName(dishName);
-
-        boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
-                .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishDto.getName()));
-
-        if (!dishExistsInUserDishMappings) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
-        }
-
-        DishDetailsDto dishDetailsDto = dishDetailsMapper.mapToDishDetailsDto(dishDto);
-        return new ResponseEntity<>(dishDetailsDto, HttpStatus.OK);
+        List<DishDetailsReturnDto> dishDetailsReturnDtos = dishFacade.getDishesByName(dishName, userDetails.getUsername());
+        return new ResponseEntity<>(dishDetailsReturnDtos, HttpStatus.OK);
     }
 
-    @GetMapping
+    // Get http://localhost:8080/api/dishes/getAll
+    @GetMapping("getAll")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<List<DishDetailsDto>> getAllDishes(
-            @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<List<DishDetailsReturnDto>> getAllDishes(
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-        String userName = userDetails.getUsername();
-        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
-
-        List<DishDetailsDto> dishDetailsDtos = userDishMappingDtos.stream().map(userDishMappingDto -> {
-            DishDto dishDto = dishService.getDishByName(userDishMappingDto.getDishName());
-            return dishDetailsMapper.mapToDishDetailsDto(dishDto);
-        }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(dishDetailsDtos, HttpStatus.OK);
+        List<DishDetailsReturnDto> dishDetailsReturnDtos = dishFacade.getAllDishes(userDetails.getUsername());
+        return new ResponseEntity<>(dishDetailsReturnDtos, HttpStatus.OK);
     }
 
-    @PutMapping("{name}")
+    // Put http://localhost:8080/api/dishes/update/id={id}
+    @PutMapping("update/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<DishDetailsDto> updateDish(
+    public ResponseEntity<DishDetailsReturnDto> updateDish(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("name") String dishName,
-            @RequestBody DishDetailsDto updateDishDetailsDto){
-        return null;
+            @PathVariable("id") Long dishId,
+            @RequestBody DishDetailsCreateDto udpatedDishDetailsCreateDto){
+
+        DishDetailsReturnDto dishDetailsReturnDto = dishFacade.updateDish(
+                dishId, udpatedDishDetailsCreateDto, userDetails.getUsername());
+        return new ResponseEntity<>(dishDetailsReturnDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("{name}")
+    // Delete http://localhost:8080/api/dishes/delete/id={id}
+    @DeleteMapping("delete/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<String> deleteDish(
-            @PathVariable("name") String dishName,
-            @AuthenticationPrincipal UserDetails userDetails){
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long dishId){
 
-        String userName = userDetails.getUsername();
-        List<UserDishMappingDto> userDishMappingDtos = userDishMappingService.getUserDishMappingDtosByUserName(userName);
-        DishDto dishDto = dishService.getDishByName(dishName);
-
-        boolean dishExistsInUserDishMappings = userDishMappingDtos.stream()
-                .anyMatch(userDishMappingDto -> userDishMappingDto.getDishName().equals(dishDto.getName()));
-
-        if (!dishExistsInUserDishMappings) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Dish does not exist in current user's dishes with given dishName: " + dishName);
-        }
-
-        dishService.deleteDish(dishName);
-        return new ResponseEntity<>("Delete dish " + dishName + " successfully", HttpStatus.NO_CONTENT);
+        String response = dishFacade.deleteDish(dishId, userDetails.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

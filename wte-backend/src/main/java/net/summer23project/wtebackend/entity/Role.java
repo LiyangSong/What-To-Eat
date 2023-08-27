@@ -28,8 +28,8 @@ public class Role {
     @Column(name = "role_name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private Set<UserRoleMapping> userRoleMappings = new HashSet<>();
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    private Set<User> users = new HashSet<>();
 
     @Override
     public boolean equals(Object obj) {
@@ -41,15 +41,15 @@ public class Role {
         }
 
         Role role = (Role) obj;
-        if (role.getName() == null || this.getName() == null) {
+        if (role.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(role.getName(), this.getName());
+        return  Objects.equals(role.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }

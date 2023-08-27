@@ -41,15 +41,15 @@ public class Gender {
         }
 
         Gender gender = (Gender) obj;
-        if (gender.getName() == null || this.getName() == null) {
+        if (gender.getId() == null || this.getId() == null) {
             return false;
         }
 
-        return  Objects.equals(gender.getName(), this.getName());
+        return  Objects.equals(gender.getId(), this.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getName());
+        return Objects.hashCode(this.getId());
     }
 }

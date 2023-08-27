@@ -1,6 +1,5 @@
 package net.summer23project.wtebackend.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +20,6 @@ public class GlobalExceptionHandler {
                 webRequest.getDescription(false)
         );
 
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDetails, apiException.getStatus());
     }
 }
