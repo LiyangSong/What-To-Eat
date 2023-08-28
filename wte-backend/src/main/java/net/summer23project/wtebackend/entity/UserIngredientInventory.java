@@ -27,11 +27,25 @@ public class UserIngredientInventory {
     private double ingredientInventory;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_userIngredientInventory_user",
+                    foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(
+            name = "ingredient_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_userIngredientInventory_ingredient",
+                    foreignKeyDefinition = "FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private Ingredient ingredient;
 
     @Override

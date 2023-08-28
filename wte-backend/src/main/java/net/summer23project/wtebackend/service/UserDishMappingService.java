@@ -11,5 +11,5 @@ public interface UserDishMappingService {
     UserDishMappingDto create(UserDishMappingDto userDishMappingDto);
     List<UserDishMappingDto> getByUserName(String userName);
     void delete(UserDishMappingDto userDishMappingDto);
-    boolean exists(String userName, Long dishId);
+    boolean exist(String userName, Long dishId);
 }

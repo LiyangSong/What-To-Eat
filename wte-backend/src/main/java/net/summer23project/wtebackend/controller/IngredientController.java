@@ -3,6 +3,7 @@ package net.summer23project.wtebackend.controller;
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.IngredientDetailsCreateDto;
 import net.summer23project.wtebackend.dto.IngredientDetailsReturnDto;
+import net.summer23project.wtebackend.dto.UserIngredientInventoryCreateDto;
 import net.summer23project.wtebackend.dto.UserIngredientInventoryReturnDto;
 import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.facade.IngredientFacade;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 /**
  * @author Liyang
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class IngredientController {
     private final IngredientFacade ingredientFacade;
 
-    // Post http://localhost:8080/api/ingredients/create
+    // POST http://localhost:8080/api/ingredients/create
     @PostMapping("create")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -33,71 +35,61 @@ public class IngredientController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody IngredientDetailsCreateDto ingredientDetailsCreateDto) {
 
-        IngredientDetailsReturnDto ingredientDetailsReturnDto = ingredientFacade.createIngredient(
+        IngredientDetailsReturnDto ingredientDetailsReturnDto = ingredientFacade.create(
                 ingredientDetailsCreateDto, userDetails.getUsername());
         return new ResponseEntity<>(ingredientDetailsReturnDto, HttpStatus.CREATED);
     }
 
-    // Post http://localhost:8080/api/ingredients/add/id={id}
-    @PostMapping("add/id={id}")
+    // GET http://localhost:8080/api/ingredients/get/id={id}
+    @GetMapping("get/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<UserIngredientInventoryReturnDto> addIngredient(
-            @AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<IngredientDetailsReturnDto> getIngredientById(
             @PathVariable("id") Long ingredientId) {
 
-        UserIngredientInventoryReturnDto inventoryReturnDto = ingredientFacade.addIngredient(
-                ingredientId, userDetails.getUsername());
-        return new ResponseEntity<>(inventoryReturnDto, HttpStatus.CREATED);
+        IngredientDetailsReturnDto ingredientDetailsReturnDto = ingredientFacade.getById(ingredientId);
+        return new ResponseEntity<>(ingredientDetailsReturnDto, HttpStatus.OK);
     }
 
-    // Delete http://localhost:8080/api/ingredients/remove/id={id}
-    @DeleteMapping("remove/id={id}")
+    // GET http://localhost:8080/api/ingredients/get/name={name}
+    @GetMapping("get/name={name}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<String> removeIngredient(
+    public ResponseEntity<List<IngredientDetailsReturnDto>> getIngredientsByName(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("id") Long ingredientId) {
+            @PathVariable("name") String ingredientName) {
 
-        String response = ingredientFacade.removeIngredient(ingredientId, userDetails.getUsername());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        List<IngredientDetailsReturnDto> ingredientDetailsReturnDtos = ingredientFacade.getByName(
+                ingredientName, userDetails.getUsername());
+        return new ResponseEntity<>(ingredientDetailsReturnDtos, HttpStatus.OK);
     }
 
-    //@GetMapping("{name}")
-    //@Transactional(rollbackFor = ApiException.class)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    //public ResponseEntity<IngredientDetailsDto> getIngredientByName(
-    //        @PathVariable("name") String ingredientName) {
-    //
-    //    IngredientDto ingredientDto = ingredientService.getIngredientByName(ingredientName);
-    //    IngredientDetailsDto ingredientDetailsDto = ingredientDetailsMapper.mapToIngredientDetailsDto(ingredientDto);
-    //    return new ResponseEntity<>(ingredientDetailsDto, HttpStatus.OK);
-    //}
-    //
-    //@GetMapping
-    //@Transactional(rollbackFor = ApiException.class)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    //public ResponseEntity<List<IngredientDetailsDto>> getAllIngredients() {
-    //    List<IngredientDetailsDto> ingredientDetailsDtos = ingredientService.getAllIngredients()
-    //            .stream().map(ingredientDetailsMapper::mapToIngredientDetailsDto)
-    //            .collect(Collectors.toList());
-    //
-    //    return new ResponseEntity<>(ingredientDetailsDtos, HttpStatus.OK);
-    //}
-    //
-    //@PutMapping("{name}")
-    //@Transactional(rollbackFor = ApiException.class)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    //public ResponseEntity<IngredientDetailsDto> updateIngredient(
-    //        @PathVariable("name") String ingredientName,
-    //        @RequestBody DishReturnDto updateIngredientDetailsDto){
-    //
-    //
-    //
-    //    return null;
-    //}
+    // GET http://localhost:8080/api/ingredients/getAll
+    @GetMapping("getAll")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<IngredientDetailsReturnDto>> getAllIngredients(
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-    // Delete http://localhost:8080/api/ingredients/delete/id={id}
+        List<IngredientDetailsReturnDto> ingredientDetailsReturnDtos = ingredientFacade.getAll(userDetails.getUsername());
+        return new ResponseEntity<>(ingredientDetailsReturnDtos, HttpStatus.OK);
+    }
+
+    // PUT http://localhost:8080/api/ingredients/update/id={id}
+    @PutMapping("update/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<IngredientDetailsReturnDto> updateIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId,
+            @RequestBody IngredientDetailsCreateDto updatedIngredientDetailsCreateDto){
+
+        IngredientDetailsReturnDto ingredientDetailsReturnDto = ingredientFacade.update(
+                ingredientId, updatedIngredientDetailsCreateDto, userDetails.getUsername());
+        return new ResponseEntity<>(ingredientDetailsReturnDto, HttpStatus.OK);
+    }
+
+    // DELETE http://localhost:8080/api/ingredients/delete/id={id}
     @DeleteMapping("delete/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -105,7 +97,59 @@ public class IngredientController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long ingredientId){
 
-        String response = ingredientFacade.deleteIngredient(ingredientId, userDetails.getUsername());
+        String response = ingredientFacade.delete(ingredientId, userDetails.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // POST http://localhost:8080/api/ingredients/add/id={id}
+    @PostMapping("add/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserIngredientInventoryReturnDto> addIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId) {
+
+        UserIngredientInventoryReturnDto inventoryReturnDto = ingredientFacade.add(
+                ingredientId, userDetails.getUsername());
+        return new ResponseEntity<>(inventoryReturnDto, HttpStatus.CREATED);
+    }
+
+    // GET http://localhost:8080/api/ingredients/getInventory/id={id}
+    @GetMapping("getInventory/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserIngredientInventoryReturnDto> getIngredientInventory(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId) {
+
+        UserIngredientInventoryReturnDto inventoryReturnDto = ingredientFacade.getInventory(
+                ingredientId, userDetails.getUsername());
+        return new ResponseEntity<>(inventoryReturnDto, HttpStatus.OK);
+    }
+
+    // PUT http://localhost:8080/api/ingredients/updateInventory/id={id}
+    @PutMapping("updateInventory/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<UserIngredientInventoryReturnDto> updateIngredientInventory(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId,
+            @RequestBody UserIngredientInventoryCreateDto updatedInventoryCreateDto) {
+
+        UserIngredientInventoryReturnDto inventoryReturnDto = ingredientFacade.updateInventory(
+                ingredientId, updatedInventoryCreateDto, userDetails.getUsername());
+        return new ResponseEntity<>(inventoryReturnDto, HttpStatus.OK);
+    }
+
+    // DELETE http://localhost:8080/api/ingredients/remove/id={id}
+    @DeleteMapping("remove/id={id}")
+    @Transactional(rollbackFor = ApiException.class)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<String> removeIngredient(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long ingredientId) {
+
+        String response = ingredientFacade.remove(ingredientId, userDetails.getUsername());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

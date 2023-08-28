@@ -10,13 +10,13 @@ import java.util.List;
  * @author Liyang
  */
 public interface DishFacade {
-    DishDetailsReturnDto createDish(DishDetailsCreateDto dishDetailsCreateDto, String userName);
-    UserDishMappingDto addDish(Long dishId, String userName);
-    String removeDish(Long dishId, String userName);
-    DishDetailsReturnDto getDishById(Long dishId);
-    List<DishDetailsReturnDto> getDishesByName(String dishName, String userName);
-    List<DishDetailsReturnDto> getAllDishes(String userName);
-    DishDetailsReturnDto updateDish(
+    DishDetailsReturnDto create(DishDetailsCreateDto dishDetailsCreateDto, String userName);
+    DishDetailsReturnDto getById(Long dishId);
+    List<DishDetailsReturnDto> getByName(String dishName, String userName);
+    List<DishDetailsReturnDto> getAll(String userName);
+    DishDetailsReturnDto update(
             Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto, String userName);
-    String deleteDish(Long dishId, String userName);
+    String delete(Long dishId, String userName);
+    UserDishMappingDto add(Long dishId, String userName);
+    String remove(Long dishId, String userName);
 }

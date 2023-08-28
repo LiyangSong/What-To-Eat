@@ -29,7 +29,14 @@ public class Ingredient {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "unit_id")
+    @JoinColumn(
+            name = "unit_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_ingredient_unit",
+                    foreignKeyDefinition = "FOREIGN KEY (unit_id) REFERENCES units(unit_id) ON UPDATE CASCADE"
+            )
+    )
     private Unit unit;
 
     @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})

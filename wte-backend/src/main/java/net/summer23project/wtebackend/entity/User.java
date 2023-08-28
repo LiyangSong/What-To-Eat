@@ -38,11 +38,25 @@ public class User {
     private Integer age;
 
     @ManyToOne
-    @JoinColumn(name = "gender_id")
+    @JoinColumn(
+            name = "gender_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_user_gender",
+                    foreignKeyDefinition = "FOREIGN KEY (gender_id) REFERENCES genders(gender_id) ON UPDATE CASCADE"
+            )
+    )
     private Gender gender;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(
+            name = "role_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_user_role",
+                    foreignKeyDefinition = "FOREIGN KEY (role_id) REFERENCES roles(role_id) ON UPDATE CASCADE"
+            )
+    )
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.REMOVE})

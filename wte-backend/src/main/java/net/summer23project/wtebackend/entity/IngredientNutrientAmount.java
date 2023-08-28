@@ -27,11 +27,25 @@ public class IngredientNutrientAmount {
     private double nutrientAmount;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(
+            name = "ingredient_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_ingredientNutrientAmount_ingredient",
+                    foreignKeyDefinition = "FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private Ingredient ingredient;
 
     @ManyToOne
-    @JoinColumn(name = "nutrient_id")
+    @JoinColumn(
+            name = "nutrient_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_ingredientNutrientAmount_nutrient",
+                    foreignKeyDefinition = "FOREIGN KEY (nutrient_id) REFERENCES nutrients(nutrient_id) ON UPDATE CASCADE ON DELETE CASCADE"
+            )
+    )
     private Nutrient nutrient;
 
     @Override

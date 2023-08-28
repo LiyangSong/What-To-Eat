@@ -18,7 +18,5 @@ public interface UserIngredientInventoryService {
             Long inventoryId,
             UserIngredientInventoryCreateDto updatedInventoryCreateDto);
     void delete(Long inventoryId);
-    List<UserIngredientInventoryReturnDto> updateList(
-            String userName,
-            List<UserIngredientInventoryCreateDto> updatedInventoryCreateDtos);
+    boolean exist(String userName, Long ingredientId);
 }

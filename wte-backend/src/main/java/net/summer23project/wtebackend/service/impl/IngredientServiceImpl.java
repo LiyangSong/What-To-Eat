@@ -14,11 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 
 /**
- * @author Yue, Liyang
+ * @author Liyang
  */
 @Service
 @AllArgsConstructor
@@ -45,32 +44,43 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public IngredientReturnDto getById(Long ingredientId) {
-        return null;
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredient does not exist with given ingredientId: " + ingredientId));
+        return ingredientMapper.mapToIngredientReturnDto(ingredient);
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientReturnDto> getByName(String ingredientName) {
-        return null;
-        //Ingredient ingredient = ingredientRepository.findByName(ingredientName)
-        //        .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Ingredient does not exist with given ingredientName: " + ingredientName));
-        //return ingredientMapper.mapToIngredientDto(ingredient);
+        List<Ingredient> ingredients = ingredientRepository.findAllByNameContainingIgnoreCase(ingredientName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredient does not exist with given ingredientName: " + ingredientName));
+        return ingredients.stream()
+                .map(ingredientMapper::mapToIngredientReturnDto)
+                .toList();
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientReturnDto> getAll() {
-        return null;
-        //List<Ingredient> ingredients = ingredientRepository.findAll();
-        //return ingredients.stream().map(
-        //        ingredientMapper::mapToIngredientDto)
-        //        .collect(Collectors.toList());
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        return ingredients.stream()
+                .map(ingredientMapper::mapToIngredientReturnDto)
+                .toList();
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public IngredientReturnDto update(Long ingredientId, IngredientCreateDto ingredientCreateDto) {
-        return null;
+    public IngredientReturnDto update(Long ingredientId, IngredientCreateDto updatedIngredientCreateDto) {
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredient does not exist with given ingredientId: " + ingredientId));
+        ingredient.setName(updatedIngredientCreateDto.getName());
+
+        String unitName = updatedIngredientCreateDto.getUnitName();
+        Unit unit = unitRepository.findByName(unitName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Unit does not exist with given unitName: " + unitName));
+        ingredient.setUnit(unit);
+
+        return ingredientMapper.mapToIngredientReturnDto(ingredient);
     }
 
     @Override
