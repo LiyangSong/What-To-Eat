@@ -76,7 +76,7 @@ public class IngredientController {
     }
 
     // PUT http://localhost:8080/api/ingredients/update/id={id}
-    @PutMapping("udpate/id={id}")
+    @PutMapping("update/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<IngredientDetailsReturnDto> updateIngredient(
@@ -127,7 +127,7 @@ public class IngredientController {
         return new ResponseEntity<>(inventoryReturnDto, HttpStatus.OK);
     }
 
-    // PUT http://localhost:8080/api/ingredients/updateInventory
+    // PUT http://localhost:8080/api/ingredients/updateInventory/id={id}
     @PutMapping("updateInventory/id={id}")
     @Transactional(rollbackFor = ApiException.class)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
