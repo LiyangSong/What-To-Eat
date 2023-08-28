@@ -180,6 +180,10 @@ public class DishFacadeImpl implements DishFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public UserDishMappingDto add(Long dishId, String userName) {
+        if (userDishMappingService.exist(userName, dishId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "UserDishMapping already exists with given dishId: " + dishId);
+        }
+
         Long userId = userService.getByName(userName).getId();
         UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
                 userId, dishId);
