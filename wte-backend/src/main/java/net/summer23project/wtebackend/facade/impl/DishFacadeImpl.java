@@ -30,10 +30,10 @@ public class DishFacadeImpl implements DishFacade {
     private final DishIngredientAmountMapper dishIngredientAmountMapper;
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishDetailsReturnDto createDish(
+    public DishDetailsReturnDto create(
             DishDetailsCreateDto dishDetailsCreateDto, String userName) {
 
-        // Create new dish
+        // Create new dish.
         DishCreateDto dishCreateDto = new DishCreateDto(
                 dishDetailsCreateDto.getDishName());
         DishReturnDto dishReturnDto = dishService.create(dishCreateDto);
@@ -44,7 +44,7 @@ public class DishFacadeImpl implements DishFacade {
                 userId, dishReturnDto.getId());
         userDishMappingService.create(userDishMappingDto);
 
-        // Create new dishIngredientAmounts
+        // Create new dishIngredientAmounts.
         List<DishIngredientAmountReturnDto> amountReturnDtos = dishDetailsCreateDto.getIngredientAmountMaps()
                 .stream().map(amountMap -> {
                     DishIngredientAmountCreateDto amountDto = dishIngredientAmountMapper.mapToDishIngredientAmountCreateDto(
@@ -52,7 +52,7 @@ public class DishFacadeImpl implements DishFacade {
                     return dishIngredientAmountService.create(amountDto);
                 }).toList();
 
-        // Get created dishDetails
+        // Get created dishDetails.
         List<Map<String, Object>> amountReturnMaps = new ArrayList<>();
         for (DishIngredientAmountReturnDto amountReturnDto : amountReturnDtos) {
             amountReturnMaps.add(
@@ -69,30 +69,7 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public UserDishMappingDto addDish(Long dishId, String userName) {
-        Long userId = userService.getByName(userName).getId();
-        UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
-                userId, dishId);
-        return userDishMappingService.create(userDishMappingDto);
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public String removeDish(Long dishId, String userName) {
-        if (!userDishMappingService.exist(userName, dishId)) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "UserDishMapping does not exists with given dishId: " + dishId);
-        }
-
-        userDishMappingService.delete(new UserDishMappingDto(
-                userService.getByName(userName).getId(),
-                dishId
-        ));
-        return "Delete userDishMapping successfully with dishId: " + dishId;
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public DishDetailsReturnDto getDishById(Long dishId) {
+    public DishDetailsReturnDto getById(Long dishId) {
         List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.getByDishId(dishId);
         List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
                 .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
@@ -107,7 +84,7 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public List<DishDetailsReturnDto> getDishesByName(String dishName, String userName) {
+    public List<DishDetailsReturnDto> getByName(String dishName, String userName) {
         // Get all dishes of current user and admin.
         List<UserDishMappingDto> mappingDtos = Stream.concat(
                 userDishMappingService.getByUserName(userName).stream(),
@@ -139,7 +116,7 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public List<DishDetailsReturnDto> getAllDishes(String userName) {
+    public List<DishDetailsReturnDto> getAll(String userName) {
         List<UserDishMappingDto> mappingDtos = userDishMappingService.getByUserName(userName);
         return mappingDtos.stream().map(mappingDto -> {
             Long dishId = mappingDto.getDishId();
@@ -158,23 +135,26 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishDetailsReturnDto updateDish(
+    public DishDetailsReturnDto update(
             Long dishId, DishDetailsCreateDto updatedDishDetailsCreateDto, String userName) {
 
         if (!userDishMappingService.exist(userName, dishId)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to update dish with given dishId: " + dishId);
         }
 
+        // Update dish.
         DishCreateDto updatedDishCreateDto = new DishCreateDto(
                 updatedDishDetailsCreateDto.getDishName());
         DishReturnDto dishReturnDto = dishService.update(dishId, updatedDishCreateDto);
 
+        // Update dishIngredientAmount.
         List<DishIngredientAmountCreateDto> updatedAmountCreateDtos = updatedDishDetailsCreateDto.getIngredientAmountMaps()
                 .stream().map(amountMap ->
                         dishIngredientAmountMapper.mapToDishIngredientAmountCreateDto(
                                 dishId, amountMap)
                 ).toList();
-        List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.updateList(dishId, updatedAmountCreateDtos);
+        List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.updateList(
+                dishId, updatedAmountCreateDtos);
         List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
                 .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
                 .toList();
@@ -188,12 +168,35 @@ public class DishFacadeImpl implements DishFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public String deleteDish(Long dishId, String userName) {
+    public String delete(Long dishId, String userName) {
         if (!userDishMappingService.exist(userName, dishId)) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to delete dish with given dishId: " + dishId);
         }
 
         dishService.delete(dishId);
         return "Delete dish successfully with dishId: " + dishId;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public UserDishMappingDto add(Long dishId, String userName) {
+        Long userId = userService.getByName(userName).getId();
+        UserDishMappingDto userDishMappingDto = new UserDishMappingDto(
+                userId, dishId);
+        return userDishMappingService.create(userDishMappingDto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public String remove(Long dishId, String userName) {
+        if (!userDishMappingService.exist(userName, dishId)) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "UserDishMapping does not exists with given dishId: " + dishId);
+        }
+
+        userDishMappingService.delete(new UserDishMappingDto(
+                userService.getByName(userName).getId(),
+                dishId
+        ));
+        return "Delete userDishMapping successfully with dishId: " + dishId;
     }
 }
