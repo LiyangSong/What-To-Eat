@@ -29,7 +29,7 @@ public class IngredientFacadeImpl implements IngredientFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public IngredientDetailsReturnDto createIngredient(
+    public IngredientDetailsReturnDto create(
             IngredientDetailsCreateDto ingredientDetailsCreateDto, String userName) {
 
         // Create new ingredient
@@ -71,7 +71,76 @@ public class IngredientFacadeImpl implements IngredientFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public UserIngredientInventoryReturnDto addIngredient(Long ingredientId, String userName) {
+    public IngredientDetailsReturnDto getById(Long ingredientId) {
+        // TODO for Yue
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public List<IngredientDetailsReturnDto> getByName(String ingredientName, String userName) {
+        // TODO for Yue
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public List<IngredientDetailsReturnDto> getAll(String userName) {
+        // TODO for Yue
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public IngredientDetailsReturnDto update(
+            Long ingredientId, IngredientDetailsCreateDto updatedIngredientDetailsCreateDto, String userName) {
+
+        if(!userIngredientInventoryService.exist(userName, ingredientId)) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to udpate ingredient with given ingredientId: " + ingredientId);
+        }
+
+        // Update ingredient.
+        IngredientCreateDto ingredientCreateDto = new IngredientCreateDto(
+                updatedIngredientDetailsCreateDto.getIngredientName(),
+                updatedIngredientDetailsCreateDto.getUnitName()
+        );
+        IngredientReturnDto ingredientReturnDto = ingredientService.update(ingredientId, ingredientCreateDto);
+
+        // Update ingredientNutrientAmount
+        List<IngredientNutrientAmountCreateDto> updatedAmountCreateDtos = updatedIngredientDetailsCreateDto.getNutrientAmountMaps()
+                .stream().map(amountMap ->
+                                ingredientNutrientAmountMapper.mapToIngredientNutrientAmountCreateDto(
+                                        ingredientId, amountMap)
+                ).toList();
+        List<IngredientNutrientAmountReturnDto> amountReturnDtos = ingredientNutrientAmountService.updateList(
+                ingredientId, updatedAmountCreateDtos);
+        List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
+                .map(ingredientNutrientAmountMapper::mapToIngredientNutrientAmountMap)
+                .toList();
+
+        return new IngredientDetailsReturnDto(
+                ingredientId,
+                ingredientReturnDto.getName(),
+                ingredientReturnDto.getUnitName(),
+                amountReturnMaps
+        );
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public String delete(Long ingredientId, String userName) {
+        if (!userIngredientInventoryService.exist(userName, ingredientId)) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to delete ingredient with given ingredientId: " + ingredientId);
+        }
+
+        ingredientService.delete(ingredientId);
+        return "Delete ingredient successfully with ingredientId: " + ingredientId;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public UserIngredientInventoryReturnDto add(Long ingredientId, String userName) {
         UserIngredientInventoryCreateDto inventoryCreateDto = new UserIngredientInventoryCreateDto();
         inventoryCreateDto.setUserName(userName);
         inventoryCreateDto.setIngredientId(ingredientId);
@@ -80,46 +149,27 @@ public class IngredientFacadeImpl implements IngredientFacade {
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public String removeIngredient(Long ingredientId, String userName) {
+    public UserIngredientInventoryReturnDto getInventory(Long ingredientId, String userName) {
+        return userIngredientInventoryService.getByUserNameAndIngredientId(userName, ingredientId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public UserIngredientInventoryReturnDto updateInventory(
+            Long ingredientId, UserIngredientInventoryCreateDto updatedInventoryCreateDto, String userName) {
+
+        Long inventoryId = userIngredientInventoryService.getByUserNameAndIngredientId(
+                userName, ingredientId).getId();
+        return userIngredientInventoryService.update(inventoryId, updatedInventoryCreateDto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public String remove(Long ingredientId, String userName) {
         Long inventoryId = userIngredientInventoryService.getByUserNameAndIngredientId(
                 userName, ingredientId).getId();
         userIngredientInventoryService.delete(inventoryId);
 
         return "Delete userIngredientInventory successfully with ingredientId: " + ingredientId;
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public IngredientDetailsReturnDto getIngredientById(Long ingredientId) {
-        return null;
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public List<IngredientDetailsReturnDto> getIngredientesByName(String ingredientName, String userName) {
-        return null;
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public List<IngredientDetailsReturnDto> getAllIngredientes(String userName) {
-        return null;
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public IngredientDetailsReturnDto updateIngredient(Long ingredientId, IngredientDetailsCreateDto updatedIngredientDetailsCreateDto, String userName) {
-        return null;
-    }
-
-    @Override
-    @Transactional(rollbackFor = ApiException.class)
-    public String deleteIngredient(Long ingredientId, String userName) {
-        if (!userIngredientInventoryService.exist(userName, ingredientId)) {
-            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to delete ingredient with given ingredientId: " + ingredientId);
-        }
-
-        ingredientService.delete(ingredientId);
-        return "Delete ingredient successfully with ingredientId: " + ingredientId;
     }
 }

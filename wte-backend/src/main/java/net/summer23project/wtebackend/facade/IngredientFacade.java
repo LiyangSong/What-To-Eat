@@ -8,13 +8,16 @@ import java.util.List;
  * @author Liyang
  */
 public interface IngredientFacade {
-    IngredientDetailsReturnDto createIngredient(IngredientDetailsCreateDto ingredientDetailsCreateDto, String userName);
-    UserIngredientInventoryReturnDto addIngredient(Long ingredientId, String userName);
-    String removeIngredient(Long ingredientId, String userName);
-    IngredientDetailsReturnDto getIngredientById(Long ingredientId);
-    List<IngredientDetailsReturnDto> getIngredientesByName(String ingredientName, String userName);
-    List<IngredientDetailsReturnDto> getAllIngredientes(String userName);
-    IngredientDetailsReturnDto updateIngredient(
+    IngredientDetailsReturnDto create(IngredientDetailsCreateDto ingredientDetailsCreateDto, String userName);
+    IngredientDetailsReturnDto getById(Long ingredientId);
+    List<IngredientDetailsReturnDto> getByName(String ingredientName, String userName);
+    List<IngredientDetailsReturnDto> getAll(String userName);
+    IngredientDetailsReturnDto update(
             Long ingredientId, IngredientDetailsCreateDto updatedIngredientDetailsCreateDto, String userName);
-    String deleteIngredient(Long ingredientId, String userName);
+    String delete(Long ingredientId, String userName);
+    UserIngredientInventoryReturnDto add(Long ingredientId, String userName);
+    UserIngredientInventoryReturnDto getInventory(Long ingredientId, String userName);
+    UserIngredientInventoryReturnDto updateInventory(
+            Long ingredientId, UserIngredientInventoryCreateDto updatedInventoryCreateDto, String userName);
+    String remove(Long ingredientId, String userName);
 }
