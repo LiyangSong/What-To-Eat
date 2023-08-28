@@ -78,4 +78,36 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName));
         return userMapper.mapToUserReturnDto(user);
     }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public UserReturnDto update(Long userId, UserRegisterDto updatedUserRegisterDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userId: " + userId));
+        user.setName(updatedUserRegisterDto.getName());
+        user.setPassword(updatedUserRegisterDto.getPassword());
+        user.setEmail(updatedUserRegisterDto.getEmail());
+        user.setAge(updatedUserRegisterDto.getAge());
+
+        String genderName = updatedUserRegisterDto.getGenderName();
+        Gender gender = genderRepository.findByName(genderName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Gender does not exist with given genderName: " + genderName));
+        user.setGender(gender);
+
+        String roleName = updatedUserRegisterDto.getRoleName();
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Role does not exist with given roleName: " + roleName));
+        user.setRole(role);
+
+        User savedUser = userRepository.save(user);
+        return userMapper.mapToUserReturnDto(savedUser);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public void delete(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userId: " + userId));
+        userRepository.delete(user);
+    }
 }

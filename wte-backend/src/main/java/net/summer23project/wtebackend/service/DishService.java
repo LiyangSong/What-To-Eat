@@ -13,7 +13,7 @@ public interface DishService {
     DishReturnDto getById(Long dishId);
     List<DishReturnDto> getByName(String dishName);
     List<DishReturnDto> getAll();
-    DishReturnDto update(Long dishId, DishCreateDto dishCreateDto);
+    DishReturnDto update(Long dishId, DishCreateDto updatedDishCreateDto);
     void delete(Long dishId);
 
 }

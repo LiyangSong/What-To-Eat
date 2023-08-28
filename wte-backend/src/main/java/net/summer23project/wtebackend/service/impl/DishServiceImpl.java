@@ -13,10 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * @author Yue, Liyang
+ * @author Liyang
  */
 @Service
 @AllArgsConstructor
@@ -48,7 +47,7 @@ public class DishServiceImpl implements DishService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishName: " + dishName));
         return dishes.stream()
                 .map(dishMapper::mapToDishReturnDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -57,15 +56,15 @@ public class DishServiceImpl implements DishService {
         List<Dish> dishes = dishRepository.findAll();
         return dishes.stream()
                 .map(dishMapper::mapToDishReturnDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public DishReturnDto update(Long dishId, DishCreateDto dishCreateDto) {
+    public DishReturnDto update(Long dishId, DishCreateDto updatedDishCreateDto) {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Dish does not exist with given dishId: " + dishId));
-        dish.setName(dishCreateDto.getName());
+        dish.setName(updatedDishCreateDto.getName());
         Dish savedDish = dishRepository.save(dish);
         return dishMapper.mapToDishReturnDto(savedDish);
     }

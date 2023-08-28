@@ -10,4 +10,6 @@ public interface UserService {
     UserReturnDto create(UserRegisterDto userRegisterDto);
     UserReturnDto getById(Long userId);
     UserReturnDto getByName(String userName);
+    UserReturnDto update(Long userId, UserRegisterDto updatedUserRegisterDto);
+    void delete(Long userId);
 }

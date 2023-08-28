@@ -13,7 +13,7 @@ public interface IngredientService {
     IngredientReturnDto getById(Long ingredientId);
     List<IngredientReturnDto> getByName(String ingredientName);
     List<IngredientReturnDto> getAll();
-    IngredientReturnDto update(Long ingredientId, IngredientCreateDto ingredientCreateDto);
+    IngredientReturnDto update(Long ingredientId, IngredientCreateDto updatedIngredientCreateDto);
     void delete(Long ingredientId);
 
 }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Liyang
@@ -57,7 +56,7 @@ public class DishIngredientAmountServiceImpl implements DishIngredientAmountServ
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "DishIngredientAmount does not exist with given dishId: " + dishId));
         return amounts.stream()
                 .map(dishIngredientAmountMapper::mapToDishIngredientAmountReturnDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

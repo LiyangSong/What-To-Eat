@@ -54,12 +54,22 @@ public class UserIngredientInventoryServiceImpl implements UserIngredientInvento
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<UserIngredientInventoryReturnDto> getByUserName(String userName) {
-        return null;
+        Long userId = userRepository.findByName(userName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
+                .getId();
+        List<UserIngredientInventory> inventories = userIngredientInventoryRepository.findByUserId(userId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "UserIngredientInventory does not exist with given userId: " + userId));
+
+        return inventories.stream()
+                .map(userIngredientInventoryMapper::mapToUserIngredientInventoryReturnDto)
+                .toList();
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public UserIngredientInventoryReturnDto getByUserNameAndIngredientId(String userName, Long ingredientId) {
+    public UserIngredientInventoryReturnDto getByUserNameAndIngredientId(
+            String userName, Long ingredientId) {
+
         Long userId = userRepository.findByName(userName)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
                 .getId();
@@ -71,8 +81,26 @@ public class UserIngredientInventoryServiceImpl implements UserIngredientInvento
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public UserIngredientInventoryReturnDto update(Long inventoryId, UserIngredientInventoryCreateDto updatedInventoryCreateDto) {
-        return null;
+    public UserIngredientInventoryReturnDto update(
+            Long inventoryId,
+            UserIngredientInventoryCreateDto updatedInventoryCreateDto) {
+
+        String userName = updatedInventoryCreateDto.getUserName();
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName));
+
+        Long ingredientId = updatedInventoryCreateDto.getIngredientId();
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredient does not exist with given ingredientId: " + ingredientId));
+
+        UserIngredientInventory inventory = userIngredientInventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "UserIngredientInventory does not exist with given inventoryId: " + inventoryId));
+        inventory.setUser(user);
+        inventory.setIngredient(ingredient);
+        inventory.setIngredientInventory(updatedInventoryCreateDto.getIngredientInventory());
+
+        UserIngredientInventory savedInventory = userIngredientInventoryRepository.save(inventory);
+        return userIngredientInventoryMapper.mapToUserIngredientInventoryReturnDto(savedInventory);
     }
 
     @Override
@@ -85,11 +113,6 @@ public class UserIngredientInventoryServiceImpl implements UserIngredientInvento
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
-    public List<UserIngredientInventoryReturnDto> updateList(String userName, List<UserIngredientInventoryCreateDto> updatedInventoryCreateDtos) {
-        return null;
-    }
-
-    @Override
     public boolean exist(String userName, Long ingredientId) {
         Long userId = userRepository.findByName(userName)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User does not exist with given userName: " + userName))
