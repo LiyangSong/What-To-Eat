@@ -141,6 +141,10 @@ public class IngredientFacadeImpl implements IngredientFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public UserIngredientInventoryReturnDto add(Long ingredientId, String userName) {
+        if (userIngredientInventoryService.exist(userName, ingredientId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "Inventory already exists with given ingredientId: " + ingredientId);
+        }
+
         UserIngredientInventoryCreateDto inventoryCreateDto = new UserIngredientInventoryCreateDto();
         inventoryCreateDto.setUserName(userName);
         inventoryCreateDto.setIngredientId(ingredientId);
@@ -157,6 +161,11 @@ public class IngredientFacadeImpl implements IngredientFacade {
     @Transactional(rollbackFor = ApiException.class)
     public UserIngredientInventoryReturnDto updateInventory(
             Long ingredientId, UserIngredientInventoryCreateDto updatedInventoryCreateDto, String userName) {
+
+        if(!updatedInventoryCreateDto.getIngredientId().equals(ingredientId) ||
+                !updatedInventoryCreateDto.getUserName().equals(userName)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "InventoryCreateDto contains wrong userName or ingredientId!");
+        }
 
         Long inventoryId = userIngredientInventoryService.getByUserNameAndIngredientId(
                 userName, ingredientId).getId();
