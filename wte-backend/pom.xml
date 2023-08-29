@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>net.summer23project</groupId>
 	<artifactId>wte-backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>wte-backend</name>
 	<description>What-To-Eat Backend Framework</description>
 	<properties>
