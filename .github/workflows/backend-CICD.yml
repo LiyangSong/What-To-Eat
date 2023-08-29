@@ -52,8 +52,9 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
             docker stop wte-backend || true
             docker rm wte-backend || true
-            docker run -d \
+            docker run \
               --name wte-backend \
+              -p 8080:8080 \
               -e db_url=${{ secrets.DB_URL }} \
               -e db_username=${{ secrets.DB_USERNAME }} \
               -e db_password=${{ secrets.DB_PASSWORD }} \
