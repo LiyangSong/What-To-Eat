@@ -56,7 +56,7 @@ jobs:
             docker run \
               --name wte-backend \
               -d \
-              -p 443:8080 \
+              -p 80:8080 \
               -e db_url=${{ secrets.DB_URL }} \
               -e db_username=${{ secrets.DB_USERNAME }} \
               -e db_password=${{ secrets.DB_PASSWORD }} \
