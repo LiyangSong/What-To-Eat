@@ -86,10 +86,12 @@ public class DishFacadeImpl implements DishFacade {
     @Transactional(rollbackFor = ApiException.class)
     public List<DishDetailsReturnDto> getByName(String dishName, String userName) {
         // Get all dishes of current user and admin.
-        List<UserDishMappingDto> mappingDtos = Stream.concat(
-                userDishMappingService.getByUserName(userName).stream(),
-                userDishMappingService.getByUserName("admin").stream()
-        ).toList();
+        List<UserDishMappingDto> mappingDtos = "admin".equals(userName) ?
+                userDishMappingService.getByUserName(userName)
+                : Stream.concat(
+                        userDishMappingService.getByUserName(userName).stream(),
+                        userDishMappingService.getByUserName("admin").stream()
+                ).toList();
         Set<Long> mappingDishIds = mappingDtos.stream()
                 .map(UserDishMappingDto::getDishId)
                 .collect(Collectors.toSet());

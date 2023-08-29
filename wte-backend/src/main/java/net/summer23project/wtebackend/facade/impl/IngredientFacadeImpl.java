@@ -92,10 +92,12 @@ public class IngredientFacadeImpl implements IngredientFacade {
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientDetailsReturnDto> getByName(String ingredientName, String userName) {
-        List<UserIngredientInventoryReturnDto> inventoryReturnDtos = Stream.concat(
-                userIngredientInventoryService.getByUserName(userName).stream(),
-                userIngredientInventoryService.getByUserName("admin").stream()
-        ).toList();
+        List<UserIngredientInventoryReturnDto> inventoryReturnDtos = "admin".equals(userName) ?
+                userIngredientInventoryService.getByUserName(userName)
+                : Stream.concat(
+                        userIngredientInventoryService.getByUserName(userName).stream(),
+                        userIngredientInventoryService.getByUserName("admin").stream()
+                ).toList();
 
         // Get all Ingredient IDs
         Set<Long> inventoryIngredientIds = inventoryReturnDtos.stream()
@@ -132,18 +134,18 @@ public class IngredientFacadeImpl implements IngredientFacade {
         // Transform InventoryReturnDtos to IngredientDetailsReturnDto
         return inventoryReturnDtos.stream()
                 .map(inventoryReturnDto -> {
-                    Long ingredientId = inventoryReturnDto.getId();
+                    Long ingredientId = inventoryReturnDto.getIngredientId();
                     IngredientReturnDto ingredientReturnDto = ingredientService.getById(ingredientId);
                     List<IngredientNutrientAmountReturnDto> amountReturnDtos =
                             ingredientNutrientAmountService.getByIngredientId(ingredientId);
-                    List<Map<String, Object>> nutrientAmountMaps = amountReturnDtos.stream()
+                    List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                             .map(ingredientNutrientAmountMapper::mapToIngredientNutrientAmountMap)
                             .toList();
                     return new IngredientDetailsReturnDto(
                             ingredientId,
                             ingredientReturnDto.getName(),
                             ingredientReturnDto.getUnitName(),
-                            nutrientAmountMaps
+                            amountMaps
                     );
                 }).toList();
     }
