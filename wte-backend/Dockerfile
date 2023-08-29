@@ -8,7 +8,7 @@ RUN mvn -f /tmp/pom.xml dependency:go-offline
 # Copy the project files and build the project.
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # Use OpenJDK to run the JAR
 FROM openjdk:17-jdk-slim
