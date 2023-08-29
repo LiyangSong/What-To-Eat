@@ -6,6 +6,7 @@ on:
       - "main"
     paths:
       - "wte-backend/**"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -54,6 +55,7 @@ jobs:
             docker rm wte-backend || true
             docker run \
               --name wte-backend \
+              -d \
               -p 8080:8080 \
               -e db_url=${{ secrets.DB_URL }} \
               -e db_username=${{ secrets.DB_USERNAME }} \
