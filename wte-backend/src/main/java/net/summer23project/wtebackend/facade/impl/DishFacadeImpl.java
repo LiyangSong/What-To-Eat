@@ -53,9 +53,9 @@ public class DishFacadeImpl implements DishFacade {
                 }).toList();
 
         // Get created dishDetails.
-        List<Map<String, Object>> amountReturnMaps = new ArrayList<>();
+        List<Map<String, Object>> amountMaps = new ArrayList<>();
         for (DishIngredientAmountReturnDto amountReturnDto : amountReturnDtos) {
-            amountReturnMaps.add(
+            amountMaps.add(
                     dishIngredientAmountMapper.mapToDishIngredientAmountMap(amountReturnDto)
             );
         }
@@ -63,7 +63,7 @@ public class DishFacadeImpl implements DishFacade {
         return new DishDetailsReturnDto(
                 dishReturnDto.getId(),
                 dishReturnDto.getName(),
-                amountReturnMaps
+                amountMaps
         );
     }
 
@@ -71,14 +71,14 @@ public class DishFacadeImpl implements DishFacade {
     @Transactional(rollbackFor = ApiException.class)
     public DishDetailsReturnDto getById(Long dishId) {
         List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.getByDishId(dishId);
-        List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
+        List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                 .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
                 .toList();
 
         return new DishDetailsReturnDto(
                 dishId,
                 dishService.getById(dishId).getName(),
-                amountReturnMaps
+                amountMaps
         );
     }
 
@@ -86,10 +86,12 @@ public class DishFacadeImpl implements DishFacade {
     @Transactional(rollbackFor = ApiException.class)
     public List<DishDetailsReturnDto> getByName(String dishName, String userName) {
         // Get all dishes of current user and admin.
-        List<UserDishMappingDto> mappingDtos = Stream.concat(
-                userDishMappingService.getByUserName(userName).stream(),
-                userDishMappingService.getByUserName("admin").stream()
-        ).toList();
+        List<UserDishMappingDto> mappingDtos = "admin".equals(userName) ?
+                userDishMappingService.getByUserName(userName)
+                : Stream.concat(
+                        userDishMappingService.getByUserName(userName).stream(),
+                        userDishMappingService.getByUserName("admin").stream()
+                ).toList();
         Set<Long> mappingDishIds = mappingDtos.stream()
                 .map(UserDishMappingDto::getDishId)
                 .collect(Collectors.toSet());
@@ -103,13 +105,13 @@ public class DishFacadeImpl implements DishFacade {
                 .map(dishReturnDto -> {
                     Long dishId = dishReturnDto.getId();
                     List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.getByDishId(dishId);
-                    List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
+                    List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                             .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
                             .toList();
                     return new DishDetailsReturnDto(
                             dishId,
                             dishReturnDto.getName(),
-                            amountReturnMaps
+                            amountMaps
                     );
                 }).toList();
     }
@@ -122,13 +124,13 @@ public class DishFacadeImpl implements DishFacade {
             Long dishId = mappingDto.getDishId();
             DishReturnDto dishReturnDto = dishService.getById(dishId);
             List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.getByDishId(dishId);
-            List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
+            List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                     .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
                     .toList();
             return new DishDetailsReturnDto(
                     dishId,
                     dishReturnDto.getName(),
-                    amountReturnMaps
+                    amountMaps
             );
         }).toList();
     }
@@ -155,14 +157,14 @@ public class DishFacadeImpl implements DishFacade {
                 ).toList();
         List<DishIngredientAmountReturnDto> amountReturnDtos = dishIngredientAmountService.updateList(
                 dishId, updatedAmountCreateDtos);
-        List<Map<String, Object>> amountReturnMaps = amountReturnDtos.stream()
+        List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                 .map(dishIngredientAmountMapper::mapToDishIngredientAmountMap)
                 .toList();
 
         return new DishDetailsReturnDto(
                 dishId,
                 dishReturnDto.getName(),
-                amountReturnMaps
+                amountMaps
         );
     }
 

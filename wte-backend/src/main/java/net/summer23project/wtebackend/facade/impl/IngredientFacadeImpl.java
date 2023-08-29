@@ -2,11 +2,9 @@ package net.summer23project.wtebackend.facade.impl;
 
 import lombok.AllArgsConstructor;
 import net.summer23project.wtebackend.dto.*;
-import net.summer23project.wtebackend.entity.Ingredient;
 import net.summer23project.wtebackend.exception.ApiException;
 import net.summer23project.wtebackend.facade.IngredientFacade;
 import net.summer23project.wtebackend.mapper.IngredientNutrientAmountMapper;
-import net.summer23project.wtebackend.repository.IngredientRepository;
 import net.summer23project.wtebackend.service.IngredientNutrientAmountService;
 import net.summer23project.wtebackend.service.IngredientService;
 import net.summer23project.wtebackend.service.UserIngredientInventoryService;
@@ -19,9 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * @author Liyang
+ * @author Liyang, Yue
  */
 @Component
 @AllArgsConstructor
@@ -30,8 +29,6 @@ public class IngredientFacadeImpl implements IngredientFacade {
     private final UserIngredientInventoryService userIngredientInventoryService;
     private final IngredientNutrientAmountService ingredientNutrientAmountService;
     private final IngredientNutrientAmountMapper ingredientNutrientAmountMapper;
-    private final IngredientRepository ingredientRepository;
-
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
@@ -79,86 +76,78 @@ public class IngredientFacadeImpl implements IngredientFacade {
     @Transactional(rollbackFor = ApiException.class)
     public IngredientDetailsReturnDto getById(Long ingredientId) {
         IngredientReturnDto ingredientReturnDto = ingredientService.getById(ingredientId);
-        List<IngredientNutrientAmountReturnDto> nutrientAmounts = ingredientNutrientAmountService.getByIngredientId(ingredientId);
-        List<Map<String, Object>> nutrientAmountMaps = nutrientAmounts.stream()
+        List<IngredientNutrientAmountReturnDto> amountReturnDtos = ingredientNutrientAmountService.getByIngredientId(ingredientId);
+        List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                 .map(ingredientNutrientAmountMapper::mapToIngredientNutrientAmountMap)
-                .collect(Collectors.toList());
+                .toList();
 
         return new IngredientDetailsReturnDto(
                 ingredientId,
                 ingredientReturnDto.getName(),
                 ingredientReturnDto.getUnitName(),
-                nutrientAmountMaps
+                amountMaps
         );
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientDetailsReturnDto> getByName(String ingredientName, String userName) {
-        List<UserIngredientInventoryReturnDto> inventoryDtos = userIngredientInventoryService.getByUserName(userName);
+        List<UserIngredientInventoryReturnDto> inventoryReturnDtos = "admin".equals(userName) ?
+                userIngredientInventoryService.getByUserName(userName)
+                : Stream.concat(
+                        userIngredientInventoryService.getByUserName(userName).stream(),
+                        userIngredientInventoryService.getByUserName("admin").stream()
+                ).toList();
 
         // Get all Ingredient IDs
-        Set<Long> inventoryIngredientIds = inventoryDtos.stream()
+        Set<Long> inventoryIngredientIds = inventoryReturnDtos.stream()
                 .map(UserIngredientInventoryReturnDto::getIngredientId)
                 .collect(Collectors.toSet());
 
-        List<Ingredient> ingredients = ingredientRepository.findAllByNameContainingIgnoreCase(ingredientName)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Ingredients not found with name: " + ingredientName));
+        List<IngredientReturnDto> ingredientReturnDtos = ingredientService.getByName(ingredientName);
 
-
-        List<IngredientDetailsReturnDto> result= ingredients.stream()
-                .filter(ingredient -> inventoryIngredientIds.contains(ingredient.getId()))
-                .map(ingredient -> {
-                    Long ingredientId = ingredient.getId();
-                    List<IngredientNutrientAmountReturnDto> nutrientAmountReturnDtos =
+        return ingredientReturnDtos.stream()
+                .filter(ingredientReturnDto ->
+                        inventoryIngredientIds.contains(ingredientReturnDto.getId()))
+                .map(ingredientReturnDto -> {
+                    Long ingredientId = ingredientReturnDto.getId();
+                    List<IngredientNutrientAmountReturnDto> amountReturnDtos =
                             ingredientNutrientAmountService.getByIngredientId(ingredientId);
-                    List<Map<String, Object>> nutrientAmountMaps = nutrientAmountReturnDtos.stream()
+                    List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                             .map(ingredientNutrientAmountMapper::mapToIngredientNutrientAmountMap)
-                            .collect(Collectors.toList());
+                            .toList();
                     return new IngredientDetailsReturnDto(
                             ingredientId,
-                            ingredient.getName(),
-                            ingredient.getUnit().getName(),
-                            nutrientAmountMaps
+                            ingredientReturnDto.getName(),
+                            ingredientReturnDto.getUnitName(),
+                            amountMaps
                     );
-                }).collect(Collectors.toList());
-        if (result.isEmpty()) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "No ingredients with the name " + ingredientName + " found in the inventory for user: " + userName);
-        }
-
-        return result;
+                }).toList();
     }
 
     @Override
     @Transactional(rollbackFor = ApiException.class)
     public List<IngredientDetailsReturnDto> getAll(String userName) {
         // Get all user ingredient inventory by userName
-        List<UserIngredientInventoryReturnDto> inventoryDtos = userIngredientInventoryService.getByUserName(userName);
+        List<UserIngredientInventoryReturnDto> inventoryReturnDtos = userIngredientInventoryService.getByUserName(userName);
 
-        //Extract all Ingredient IDs
-        Set<Long> inventoryIngredientIds = inventoryDtos.stream()
-                .map(UserIngredientInventoryReturnDto::getIngredientId)
-                .collect(Collectors.toSet());
-
-        // Fetch Ingredients based on IDs
-        List<Ingredient> ingredients = ingredientRepository.findAllById(inventoryIngredientIds);
-
-        //Transform Ingredients to IngredientDetailsReturnDto
-        return ingredients.stream()
-                .map(ingredient -> {
-                    Long ingredientId = ingredient.getId();
-                    List<IngredientNutrientAmountReturnDto> nutrientAmountReturnDtos =
+        // Transform InventoryReturnDtos to IngredientDetailsReturnDto
+        return inventoryReturnDtos.stream()
+                .map(inventoryReturnDto -> {
+                    Long ingredientId = inventoryReturnDto.getIngredientId();
+                    IngredientReturnDto ingredientReturnDto = ingredientService.getById(ingredientId);
+                    List<IngredientNutrientAmountReturnDto> amountReturnDtos =
                             ingredientNutrientAmountService.getByIngredientId(ingredientId);
-                    List<Map<String, Object>> nutrientAmountMaps = nutrientAmountReturnDtos.stream()
+                    List<Map<String, Object>> amountMaps = amountReturnDtos.stream()
                             .map(ingredientNutrientAmountMapper::mapToIngredientNutrientAmountMap)
-                            .collect(Collectors.toList());
+                            .toList();
                     return new IngredientDetailsReturnDto(
                             ingredientId,
-                            ingredient.getName(),
-                            ingredient.getUnit().getName(),
-                            nutrientAmountMaps
+                            ingredientReturnDto.getName(),
+                            ingredientReturnDto.getUnitName(),
+                            amountMaps
                     );
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     @Override
@@ -167,7 +156,7 @@ public class IngredientFacadeImpl implements IngredientFacade {
             Long ingredientId, IngredientDetailsCreateDto updatedIngredientDetailsCreateDto, String userName) {
 
         if(!userIngredientInventoryService.exist(userName, ingredientId)) {
-            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to udpate ingredient with given ingredientId: " + ingredientId);
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Permit required to update ingredient with given ingredientId: " + ingredientId);
         }
 
         // Update ingredient.
