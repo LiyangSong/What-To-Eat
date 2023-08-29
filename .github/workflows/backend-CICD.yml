@@ -43,16 +43,19 @@ jobs:
           REMOTE_USER: ${{ secrets.EC2_USERNAME }}
           TARGET: ${{ secrets.EC2_TARGET_DIR_BACKEND }}
       - name: Run Docker commands on EC2
-        run: |
-          echo ${ SSH_PRIVATE_KEY } > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${ REMOTE_USER }@${ REMOTE_HOST } \
-          "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest &&\
-          docker stop wte-backend || true && \
-          docker rm wte-backend || true && \
-          docker run -d \
-                     --name wte-backend \
-                     -e db_url=${{ secrets.DB_URL }} \
-                     -e db_username=${{ secrets.DB_USERNAME }} \
-                     -e db_password=${{ secrets.DB_PASSWORD }} \
-                     -e jwt_secret=${{ secrets.JWT_SECRET }} \
-          ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest"
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST_DNS }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
+            docker stop wte-backend || true
+            docker rm wte-backend || true
+            docker run -d \
+              --name wte-backend \
+              -e db_url=${{ secrets.DB_URL }} \
+              -e db_username=${{ secrets.DB_USERNAME }} \
+              -e db_password=${{ secrets.DB_PASSWORD }} \
+              -e jwt_secret=${{ secrets.JWT_SECRET }} \
+            ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
