@@ -44,4 +44,14 @@ jobs:
           TARGET: ${{ secrets.EC2_TARGET_DIR_BACKEND }}
       - name: Run Docker commands on EC2
         run: |
-          ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST_DNS }} "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest && docker run ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest"
+          ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST_DNS }} \
+          "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest &&\
+          docker stop wte-backend || true && \
+          docker rm wte-backend || true && \
+          docker run -d \
+                     --name wte-backend \
+                     -e db_url=${{ secrets.DB_URL }} \
+                     -e db_username=${{ secrets.DB_USERNAME }} \
+                     -e db_password=${{ secrets.DB_PASSWORD }} \
+                     -e jwt_secret=${{ secrets.JWT_SECRET }} \
+          ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest"
