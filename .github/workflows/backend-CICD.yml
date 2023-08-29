@@ -44,7 +44,7 @@ jobs:
           TARGET: ${{ secrets.EC2_TARGET_DIR_BACKEND }}
       - name: Run Docker commands on EC2
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+          echo "$SSH_PRIVATE_KEY" > private_key && chmod 400 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST_DNS }} \
           "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest &&\
           docker stop wte-backend || true && \
