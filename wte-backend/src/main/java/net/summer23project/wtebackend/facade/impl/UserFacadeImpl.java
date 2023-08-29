@@ -41,4 +41,22 @@ public class UserFacadeImpl implements UserFacade {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenProvider.generateToken(authentication);
     }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public UserReturnDto getByName(String userName) {
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public UserReturnDto update(UserRegisterDto userRegisterDto) {
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiException.class)
+    public String delete(String userName) {
+        return null;
+    }
 }
