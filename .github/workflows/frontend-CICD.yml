@@ -1,11 +1,11 @@
-name: Backend CI/CD Pipeline
+name: Frontend CI/CD Pipeline
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "wte-backend/**"
+      - "wte-frontend/**"
   workflow_dispatch:
 
 jobs:
@@ -27,10 +27,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./wte-backend
-          file: ./wte-backend/Dockerfile
+          context: ./wte-frontend
+          file: ./wte-frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.EC2_HOST_DNS }}
           REMOTE_USER: ${{ secrets.EC2_USERNAME }}
-          TARGET: ${{ secrets.EC2_TARGET_DIR_BACKEND }}
+          TARGET: ${{ secrets.EC2_TARGET_DIR_FRONTEND }}
       - name: Run Docker commands on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -50,15 +50,11 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
-            docker stop wte-backend || true
-            docker rm wte-backend || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
+            docker stop wte-frontend || true
+            docker rm wte-frontend || true
             docker run \
-              --name wte-backend \
+              --name wte-frontend \
               -d \
-              -p 8080:8080 \
-              -e db_url=${{ secrets.DB_URL }} \
-              -e db_username=${{ secrets.DB_USERNAME }} \
-              -e db_password=${{ secrets.DB_PASSWORD }} \
-              -e jwt_secret=${{ secrets.JWT_SECRET }} \
-            ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
+              -p 80:80 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest

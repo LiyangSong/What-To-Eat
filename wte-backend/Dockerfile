@@ -1,13 +1,15 @@
-# Use maven/Java 8 image to create a build artifact.
+# Use maven/Java 17 image to create a build artifact.
 FROM maven:3.8.5-openjdk-17-slim AS build
 
+# Set working directory
+WORKDIR /usr/src/app
+
 # Copy the pom.xml file and download the dependencies.
-COPY pom.xml /tmp/
-RUN mvn -f /tmp/pom.xml dependency:go-offline
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
 # Copy the project files and build the project.
-COPY . /usr/src/app
-WORKDIR /usr/src/app
+COPY . .
 RUN mvn clean package -DskipTests
 
 # Use OpenJDK to run the JAR
