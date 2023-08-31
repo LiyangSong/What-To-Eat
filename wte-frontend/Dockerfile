@@ -15,6 +15,9 @@ RUN npm run build
 # Use nginx to run the compiled app
 FROM nginx:alpine
 
+# Copy the nginx.conf into container
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy the build folder from build image to nginx
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 
