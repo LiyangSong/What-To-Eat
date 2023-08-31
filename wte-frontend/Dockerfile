@@ -1,6 +1,9 @@
 # Use Node runtime as base image
 FROM node:18-slim AS build
 
+# Add API URL as env variable
+ENV VITE_API_URL=$VITE_API_URL
+
 # Set working directory
 WORKDIR /usr/src/app
 
