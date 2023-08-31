@@ -23,10 +23,18 @@ function DishesComponent() {
             {error && <p>Error: {JSON.stringify(error)}</p>}
             {dishDetailsReturnDto ? (
                 <div>
-                    <h2>Dish Details</h2>
+                    <h4>Dish Details</h4>
                     <p>ID: {dishDetailsReturnDto.dishId.toString()}</p>
                     <p>Name: {dishDetailsReturnDto.dishName.toString()}</p>
-                    <p>Ingredient Amounts: {dishDetailsReturnDto.ingredientAmountMaps.toString()}</p>
+                    <p>Ingredient Amounts:</p>
+                    <p>
+                        {dishDetailsReturnDto.ingredientAmountMaps.map(map =>
+                            <div key={map.ingredientId.toString()}>
+                                <p>Ingredient Name: {map.ingredientName.toString()}</p>
+                                <p>Ingredient Amount: {map.ingredientAmount.toString()}</p>
+                            </div>
+                        )}
+                    </p>
                 </div>
             ) : (
                 <p>Loading...</p>
