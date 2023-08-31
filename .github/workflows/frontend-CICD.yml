@@ -31,6 +31,7 @@ jobs:
           file: ./wte-frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
+          build-args: VITE_API_URL=${{ secrets.EC2_PUBLIC_IP }}:8080
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,5 +58,4 @@ jobs:
               --name wte-frontend \
               -d \
               -p 80:80 \
-              -e VITE_API_URL=${{ secrets.EC2_PUBLIC_IP }}:8080 \
             ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
