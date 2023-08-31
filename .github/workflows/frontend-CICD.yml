@@ -57,5 +57,5 @@ jobs:
               --name wte-frontend \
               -d \
               -p 80:80 \
-              -e VITE_API_URL=${{ secrets.EC2_PUBLIC_IP }}:8080 \
+              -e VITE_API_URL=${{ secrets.EC2_PUBLIC_IP }}:80 \
             ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
