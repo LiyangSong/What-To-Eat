@@ -44,9 +44,6 @@ jobs:
           REMOTE_USER: ${{ secrets.EC2_USERNAME }}
           TARGET: ${{ secrets.EC2_TARGET_DIR_BACKEND }}
 
-      - name: Create Docker Network
-        run: docker network create wte_network
-
       - name: Run Docker commands on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -54,6 +51,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            docker network create wte_network
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
             docker stop wte-backend || true
             docker rm wte-backend || true
