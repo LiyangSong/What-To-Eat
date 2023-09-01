@@ -31,7 +31,7 @@ jobs:
           file: ./wte-frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
-          build-args: VITE_API_URL=http://localhost:8080/api
+          build-args: VITE_API_URL=http://wte-backend:8080/api
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,6 +44,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.EC2_HOST_DNS }}
           REMOTE_USER: ${{ secrets.EC2_USERNAME }}
           TARGET: ${{ secrets.EC2_TARGET_DIR_FRONTEND }}
+
       - name: Run Docker commands on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -56,6 +57,7 @@ jobs:
             docker rm wte-frontend || true
             docker run \
               --name wte-frontend \
+              --network wte_network \
               -d \
               -p 80:80 \
             ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
