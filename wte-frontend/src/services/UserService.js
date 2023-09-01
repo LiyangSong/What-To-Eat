@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const USER_REST_API_BASE_URL = import.meta.env.VITE_API_URL + "/api/users";
+const USER_REST_API_BASE_URL = import.meta.env.VITE_API_URL + "/users";
 
 export const registerApiCall = (userRegisterDto) => axios.post(USER_REST_API_BASE_URL + "/register", userRegisterDto);
 

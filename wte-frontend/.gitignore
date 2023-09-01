@@ -25,4 +25,5 @@ dist-ssr
 
 # Envrionmental Variables
 *.env
+*.env.*
 

@@ -1,6 +1,6 @@
 import axiosInstance from "./axiosInstance.js";
 
-const DISH_BASE_API_URL = import.meta.env.VITE_API_URL + "/api/dishes";
+const DISH_BASE_API_URL = import.meta.env.VITE_API_URL + "/dishes";
 
 export const createDish = (dishDetailsCreateDto) => axiosInstance.post(DISH_BASE_API_URL + "/create", dishDetailsCreateDto);
 
