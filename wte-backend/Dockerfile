@@ -18,5 +18,8 @@ FROM openjdk:17-jdk-slim
 # Copy the JAR from the build stage
 COPY --from=build /usr/src/app/target/wte-backend-*.jar /app/wte-backend.jar
 
+# Expose port 8080
+EXPOSE 8080
+
 # Set the command to run your application
 ENTRYPOINT ["java", "-jar", "/app/wte-backend.jar"]
