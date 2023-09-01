@@ -57,8 +57,8 @@ jobs:
               --name wte-backend \
               -d \
               -p 8080:8080 \
-              -e db_url=${{ secrets.DB_URL }} \
-              -e db_username=${{ secrets.DB_USERNAME }} \
-              -e db_password=${{ secrets.DB_PASSWORD }} \
-              -e jwt_secret=${{ secrets.JWT_SECRET }} \
+              -e DB_URL=${{ secrets.DB_URL }} \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             ${{ secrets.DOCKERHUB_USERNAME }}/wte-backend:latest
