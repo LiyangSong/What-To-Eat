@@ -59,5 +59,4 @@ jobs:
               --network wte_network \
               -d \
               -p 80:80 \
-              -e VITE_API_URL=http://wte-backend:8080/api \
             ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
