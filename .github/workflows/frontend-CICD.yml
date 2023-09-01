@@ -31,7 +31,7 @@ jobs:
           file: ./wte-frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/wte-frontend:latest
-          build-args: VITE_API_URL=http://localhost:8080
+          build-args: VITE_API_URL=http://localhost:8080/api
 
   deploy:
     runs-on: ubuntu-latest
