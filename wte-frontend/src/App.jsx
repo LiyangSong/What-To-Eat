@@ -7,9 +7,11 @@ import LoginComponent from "./components/LoginComponent.jsx";
 import RegisterComponent from "./components/RegisterComponent.jsx";
 import DishesComponent from "./components/DishesComponent.jsx";
 import IngredientsComponent from "./components/IngredientsComponent.jsx";
-import DishPlanComponent from "./components/DishPlanComponent.jsx";
+import DishCreateComponent from "./components/DishCreateComponent.jsx";
 import AdminComponent from "./components/AdminComponent.jsx";
 import PageNotFoundComponent from "./components/PageNotFoundComponent.jsx";
+import DishDetailsComponent from "./components/DishDetailsComponent.jsx";
+import DishAddComponent from "./components/DishAddComponent.jsx";
 
 function App() {
     return (
@@ -23,8 +25,10 @@ function App() {
 
                 {/* Authenticated User Routes */}
                 <Route path = "/dishes" element = {<DishesComponent />} />
-                <Route path = "/Ingredients" element = {<IngredientsComponent />} />
-                <Route path = "/dish-plan" element = {<DishPlanComponent />} />
+                <Route path = "/ingredients" element = {<IngredientsComponent />} />
+                <Route path = "/dish-add" element = {<DishAddComponent />} />
+                <Route path = "/dish-create" element = {<DishCreateComponent />} />
+                <Route path = "/dish-details" element = {<DishDetailsComponent />} />
 
                 {/* Admin Routes */}
                 <Route path = "/admin" element = {<AdminComponent />} />
